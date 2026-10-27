@@ -25,7 +25,7 @@ Generated and git-ignored: `render/` (frames), `out/` (videos), `dist/` (zip), `
 ## Golden rules (user preferences — follow them)
 
 1. **Previews are 480p (854x480) @ 30 fps** until the user explicitly confirms a final render. 1080p is slow on a CPU (~4 s/frame, 540 frames, ~35-45 min per laptop). Never start a 1080p render unprompted. Default final = 1920x1080 @ 30 fps.
-2. **No process/provenance wording on screen.** The footer is the source line + `"{used} PARTS"`; labels must not say "estimate", "reconstructed", "from X CAD", etc. Put caveats in `SOURCES_MD` (the zip README) and tell the user in your reply.
+2. **No process/provenance wording on screen.** The footer is the source line + `"{used} PARTS"`; labels must not say "estimate", "reconstructed", "from X CAD", etc. The one required exception is the licensing/trademark disclaimer the footer carries in every video and still (`DISCLAIMER` in `compose.py`, next to the source + CC BY text; see `NOTICE.md`) - keep it. Put caveats in `SOURCES_MD` (the zip README) and tell the user in your reply.
 3. **Calm motion:** three fully still holds (closed, lid open, exploded); the camera moves only with the action. Labels sit in **fixed slots** (never swap places while the camera moves) and fade in at slightly randomised times.
 4. **One shared codebase.** Laptops differ only through `fwXX_blueprint_renderer/`; never copy code into a laptop dir (except its own `tools/`). The zip/CLI must stay **CPU-only** (no GPU code).
 5. Verify visually: render stills and look at them before claiming something works. Report limitations honestly (inferred placements, estimates).
@@ -84,6 +84,10 @@ render/... --compose.py (Skia overlay)--> cNNNN.png --ffmpeg--> mp4
 ## CI (`.github/workflows/wallpapers.yml`)
 
 On every push to master/main (and manually): a matrix job per laptop x aspect (8 jobs, apt Blender + ffmpeg, CPU) renders 1920 px @ 30 fps video, then `--stills` at 3840 px (4K; its own 3 frames, the video's cache is at a different size), and uploads `out/*`. A final job replaces the assets of the single `wallpapers` release (created on first run; stale assets deleted, same-named ones overwritten). A newer push cancels a running render. This is the explicit exception to golden rule 1: the user asked for 1080p30 on every commit. Not tested on GitHub yet (YAML only parsed locally).
+
+## Licensing
+
+Code is MIT (`LICENSE`). Framework's CAD (Laptop 13/12/16 repos; the 13 Pro files are in the 13 repo) is CC BY 4.0, so the derived `cad/` meshes, scenes, videos and stills need attribution, the licence link and a statement of changes - all in `NOTICE.md` (shipped in the zip; keep its table in step when `CAD_FILES` changes), the footer `SOURCE_LINE` and the release notes. Framework's name and gear logo are trademarks the CAD licence does not cover, hence the on-screen "unofficial" disclaimer and `NOTICE.md`. Fonts are OFL; the licence texts sit in `fonts/`. Not legal advice - Framework's brand guidelines were not reviewed.
 
 ## Gotchas
 

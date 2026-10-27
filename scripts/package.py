@@ -8,7 +8,7 @@ RUNTIME = ["laptops.py", "fwconfig.py", "compose.py", "render_frames.py"]
 pkg = os.path.join(REPO, "dist", "framework_blueprint_renderers"); shutil.rmtree(pkg, ignore_errors=True)
 os.makedirs(os.path.join(pkg, "scripts")); shutil.copytree(os.path.join(REPO, "fonts"), os.path.join(pkg, "fonts"))
 for f in RUNTIME: shutil.copy(os.path.join(REPO, "scripts", f), os.path.join(pkg, "scripts", f))
-for f in ("run.py", "requirements.txt"): shutil.copy(os.path.join(REPO, f), os.path.join(pkg, f))
+for f in ("run.py", "requirements.txt", "LICENSE", "NOTICE.md"): shutil.copy(os.path.join(REPO, f), os.path.join(pkg, f))
 sources = []
 for slug in slugs:
     _, ldir = laptops.resolve(slug); dst = os.path.join(pkg, os.path.basename(ldir)); os.makedirs(os.path.join(dst, "cad"))
@@ -37,6 +37,9 @@ Other flags: `--blender PATH`, `--jobs N` (parallel overlay compositing), `--onl
 The animation is 18 s long by default and loops seamlessly (starts and ends closed): frames = 18 x fps. Any frame rate works (the animation keyed at 30 fps in the scene is sampled between keys).
 Frames are kept in `render/<laptop>_<W>x<H>_<fps>_<scene id>/` (the scene id is printed at start): a stopped run resumes, but frames rendered from an older build are never reused.
 Output: `out/<laptop>_blueprint_<W>x<H>_<fps>.mp4`, or with `--stills` `out/<laptop>_blueprint_<W>x<H>_{closed,open,exploded}.png`.
+
+## Licensing
+Unofficial fan project, not affiliated with or endorsed by Framework Computer Inc; "Framework" and the gear logo are its trademarks. Code: MIT (`LICENSE`). The CAD and everything rendered from it: CC BY 4.0, adapted from Framework's official CAD, changes listed in `NOTICE.md`. Fonts: SIL OFL (`fonts/`). The footer of every video and image carries the source, the licence and the disclaimer.
 
 ## Sources (Framework Computer, CC BY 4.0, github.com/FrameworkComputer)
 """ + "\n".join(sources))

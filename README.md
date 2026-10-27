@@ -69,6 +69,9 @@ All laptops share one codebase and differ only through their `fwXX_blueprint_ren
 - The 13 Pro CAD is exterior-only. Its cards, battery and mainboard are taken from the Laptop 13 CAD, and the mainboard is extruded from the official 2D outline, so its placement is inferred.
 - Framework publishes no 3D battery model for the Laptop 16. Its battery is an estimate sized to the free pocket in the chassis.
 
-## Credits
+## Licensing
 
-3D models come from Framework's official CAD repositories on GitHub, licensed CC BY 4.0. This is an unofficial fan project, not affiliated with or endorsed by Framework Computer Inc.
+- Code: MIT ([LICENSE](LICENSE)).
+- Framework's CAD, and the models, videos and images made from it: CC BY 4.0, credited to Framework Computer Inc with the changes listed in [NOTICE.md](NOTICE.md). Every video and still carries the source and licence in its footer.
+- Fonts: SIL Open Font License, see `fonts/`.
+- "Framework" and the gear logo are trademarks of Framework Computer Inc. This is an unofficial project, and the footer of every video and image says so.

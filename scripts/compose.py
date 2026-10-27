@@ -16,6 +16,7 @@ def font(f, size): return skia.Font(skia.Typeface.MakeFromFile(FD + f), size * S
 F_TITLE, F_H, F_L, F_S, F_M = font("Rajdhani-Bold.ttf", 34), font("Rajdhani-Bold.ttf", 13.5), font("Rajdhani-Medium.ttf", 11), font("ShareTechMono-Regular.ttf", 9.2), font("ShareTechMono-Regular.ttf", 12)
 F_BIG = font("Rajdhani-Bold.ttf", 66)
 
+DISCLAIMER = "UNOFFICIAL FAN PROJECT, NOT AFFILIATED WITH OR ENDORSED BY FRAMEWORK COMPUTER INC.  FRAMEWORK AND THE GEAR LOGO ARE ITS TRADEMARKS"   # footer, every video and still (licensing: see NOTICE.md)
 WHITE = (235, 244, 255); DIM = (150, 175, 230); ACC = (140, 215, 255)
 
 # -------------------------------------------------------------------------------- static background (gradient + grid)
@@ -145,7 +146,7 @@ def hud(cv, t):
     cv.drawRect(skia.Rect(TX, 104 * S, TX + 52 * S, 105.6 * S), paint(ACC, 1, style=skia.Paint.kFill_Style))
     text(cv, L.WATERMARK, W - 62 * S, H - 52 * S, F_BIG, (150, 175, 235), 0.12, "r", 6)
     text(cv, L.SOURCE_LINE, 64 * S, H - 40 * S, F_S, DIM, 0.75, "l", 0.8)
-    text(cv, L.NOTE_LINE.format(used=G["used"], dropped=G["dropped"]), 64 * S, H - 24 * S, F_S, DIM, 0.55, "l", 0.8)
+    text(cv, L.NOTE_LINE.format(used=G["used"], dropped=G["dropped"]) + "   /   " + DISCLAIMER, 64 * S, H - 24 * S, F_S, DIM, 0.7, "l", 0.8)
     # state scrub bar
     bx0, bx1, by = 640 * S, 640 * S + 300 * S, 62 * S
     line(cv, (bx0, by), (bx1, by), DIM, 0.6, 1.0)
