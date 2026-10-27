@@ -38,6 +38,8 @@ python run.py                                                    # TUI: laptop -
 python run.py --laptop fw16 --width 1920 --aspect 3:2 --fps 60 --yes
 python run.py --laptop fw12 --only 1,271 --yes                   # render just those frames, no video (smoke test)
 ```
+Idle time: `--idle-closed S --idle-open S --idle-exploded S` add extra seconds to the three still holds (default 0; video = 18 s + the sum). `--stills` renders only 3 images (closed, open, exploded; standard timing, 30 fps timeline) to `out/<slug>_blueprint_<W>x<H>_{closed,open,exploded}.png`, no video. Mechanism: `run.py` passes `FW_IDLE="c,o,e"`; `fwconfig.warp(t)` maps output time to the baked 18 s timeline by freezing it at the middle of each hold (`hold_mids()`; labels are fully shown at the exploded one), and `render_frames.py`/`compose.py` both sample through `warp`. `scene.blend` is unaffected (always the base 18 s, `BASE_DURATION`). The frame cache folder gets an `_idle<c>-<o>-<e>` suffix, since idle time changes what a frame number shows.
+
 Needs Blender 4.x (auto-detected or `--blender PATH`; developed on 4.0.2), ffmpeg on PATH, `pip install -r requirements.txt`. Frames are cached in `render/<slug>_<W>x<H>_<fps>_<scene id>/`: a stopped run resumes, and frames from an older build (different scene id) are never reused. If a laptop's `scene.blend` is missing, `run.py` bakes it from `cad/`. Output: `out/<slug>_blueprint_<W>x<H>_<fps>.mp4`. `run.py` renders from the tracked `scene.blend`, whose edge-line ribbons are baked for 1920 px width.
 
 Dev scripts (all take the laptop slug; honour `PYTHON=` and `BLENDER=` env overrides, otherwise use `venv/bin/python` if present, else `python3`):
@@ -47,7 +49,7 @@ Dev scripts (all take the laptop slug; honour `PYTHON=` and `BLENDER=` env overr
 - `scripts/fetch_cad.py <laptop>` downloads the official source CAD (`CAD_FILES` in `laptop.py`); `scripts/rebuild_cad.py <laptop> [--no-scene]` runs the laptop's `REBUILD` recipe (STEP -> npz meshes -> feature edges -> tools -> logo) and bakes `scene.blend`. Needs `requirements-dev.txt` (`python3 -m venv venv && venv/bin/pip install -r requirements-dev.txt`).
 - Manual scene bake: `FW_LAPTOP=fw16 blender -b --python scripts/build_scene.py` (run from the repo root). Inspect CAD with `scripts/tree.py`, `scripts/inspect_parts.py`, `scripts/hinge_axis.py` (finds hinge pivots from cylinder faces).
 
-Environment variables read by the scripts: `FW_LAPTOP` (slug or dir name; required by every script except `run.py`/`fetch_cad.py`/`rebuild_cad.py`/`package.py`, which take it as an argument), `FW_RES` (`WxH`, default 1920x1080), `FW_FPS` (default 30), `FW_SAMPLES` (Cycles samples, default 24), `FW_SHRINK` (fill inset, default 0.03 mm), `FW_SCENE_OUT` (where `build_scene.py` writes the .blend; default `<laptop dir>/scene.blend`).
+Environment variables read by the scripts: `FW_LAPTOP` (slug or dir name; required by every script except `run.py`/`fetch_cad.py`/`rebuild_cad.py`/`package.py`, which take it as an argument), `FW_RES` (`WxH`, default 1920x1080), `FW_FPS` (default 30), `FW_IDLE` (`closed,open,exploded` extra hold seconds, default `0,0,0`), `FW_SAMPLES` (Cycles samples, default 24), `FW_SHRINK` (fill inset, default 0.03 mm), `FW_SCENE_OUT` (where `build_scene.py` writes the .blend; default `<laptop dir>/scene.blend`).
 
 ## Pipeline and architecture
 

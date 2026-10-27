@@ -31,6 +31,22 @@ python run.py --laptop fw12 --only 1,271 --yes                   # render only t
 
 Supported aspect ratios are 16:9 and 3:2. The default is 1920x1080 at 30 fps. Videos are written to `out/<slug>_blueprint_<W>x<H>_<fps>.mp4`.
 
+### Idle time and still images
+
+The animation stands still in three places: the closed laptop, the opened laptop and the exploded view with labels. By default each holds for the standard time. Add extra seconds to any of them (the video gets longer; the loop stays seamless):
+
+```
+python run.py --laptop fw13 --idle-closed 2 --idle-open 1 --idle-exploded 5
+```
+
+To get only images, with no video, use `--stills`. It writes three PNGs (closed, opened, exploded) to `out/` and ignores the frame rate and idle options:
+
+```
+python run.py --laptop fw13 --stills --width 3840 --yes
+```
+
+The interactive mode asks for all of this too.
+
 A full 1080p render takes roughly 35-45 minutes per laptop on a CPU (about 4 s per frame, 540 frames). Frames are cached in `render/`, so a stopped run resumes where it left off. For a quick preview, use `--width 854`.
 
 ## Repository layout

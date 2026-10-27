@@ -161,7 +161,7 @@ def hud(cv, t):
 
 # -------------------------------------------------------------------------------- main
 for f in frames:
-    t = (f - 1) / C.FPS; d = json.load(open(f"{rd}/f{f:04d}.json")); cam, ortho, mats = d["cam"], d["ortho"], d["groups"]; SHIFT = d.get("shift", 0.0)
+    t = C.warp((f - 1) / C.FPS); d = json.load(open(f"{rd}/f{f:04d}.json")); cam, ortho, mats = d["cam"], d["ortho"], d["groups"]; SHIFT = d.get("shift", 0.0)
     A = np.asarray(Image.open(f"{rd}/a/f{f:04d}.png").convert("RGBA"), np.float32) / 255
     B = np.asarray(Image.open(f"{rd}/b/f{f:04d}.png").convert("RGBA"), np.float32) / 255
     glow = gaussian_filter(A[..., :3] * A[..., 3:], sigma=(4 * S, 4 * S, 0)) * 0.55 + gaussian_filter(A[..., :3] * A[..., 3:], sigma=(1.2 * S, 1.2 * S, 0)) * 0.25

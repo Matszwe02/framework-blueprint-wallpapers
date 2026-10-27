@@ -30,11 +30,13 @@ Questions asked: 0) laptop model  1) pixel width (320-8192, default 1920)  2) as
 Height follows from width + aspect ratio (e.g. 1920 / 16:9 -> 1920x1080, 1920 / 3:2 -> 1920x1280).
 
 Skip the questions:  `python run.py --laptop {slugs[0]} --width 1920 --aspect 3:2 --fps 60 --yes`
+Idle time: the animation stands still three times (closed, opened, exploded with labels). Add extra seconds to any of them with `--idle-closed S`, `--idle-open S`, `--idle-exploded S` (default 0 = standard timing; the video gets that much longer). The interactive mode asks for them too.
+Only images: `--stills` exports 3 PNGs (closed, opened, exploded) to `out/` and no video (no frame rate or idle questions).
 Other flags: `--blender PATH`, `--jobs N` (parallel overlay compositing), `--only 1,271` (render just those frames, no video - quick test).
 
-The animation is 18 s long and loops seamlessly (starts and ends closed): frames = 18 x fps. Any frame rate works (the animation keyed at 30 fps in the scene is sampled between keys).
+The animation is 18 s long by default and loops seamlessly (starts and ends closed): frames = 18 x fps. Any frame rate works (the animation keyed at 30 fps in the scene is sampled between keys).
 Frames are kept in `render/<laptop>_<W>x<H>_<fps>_<scene id>/` (the scene id is printed at start): a stopped run resumes, but frames rendered from an older build are never reused.
-Output: `out/<laptop>_blueprint_<W>x<H>_<fps>.mp4`.
+Output: `out/<laptop>_blueprint_<W>x<H>_<fps>.mp4`, or with `--stills` `out/<laptop>_blueprint_<W>x<H>_{closed,open,exploded}.png`.
 
 ## Sources (Framework Computer, CC BY 4.0, github.com/FrameworkComputer)
 """ + "\n".join(sources))

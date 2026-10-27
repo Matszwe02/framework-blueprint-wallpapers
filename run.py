@@ -3,6 +3,8 @@
 
     python run.py                      # asks for the laptop model, pixel width, aspect ratio and frame rate
     python run.py --laptop fw16 --width 1920 --aspect 16:9 --fps 30 --yes      # same, no questions
+    python run.py --laptop fw16 --idle-closed 2 --idle-open 1 --idle-exploded 4 ...   # hold the still poses longer (seconds added to the 18 s)
+    python run.py --laptop fw16 --stills --width 3840 --yes                    # 3 PNGs (closed, open, exploded), no video
 
 Pipeline: Blender/Cycles (two passes per frame) -> 2D overlay composite -> ffmpeg.
 Needs Blender 4.x, ffmpeg on PATH and `pip install -r requirements.txt`.
@@ -14,7 +16,8 @@ from concurrent.futures import ProcessPoolExecutor
 ROOT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(ROOT, "scripts")); import laptops
 ASPECTS = {"16:9": (16, 9), "3:2": (3, 2)}
-DURATION = 18.0
+DURATION = 18.0                                                  # base animation; the idle options add to it
+STILL_FPS = 30                                                   # --stills renders three frames of the 30 fps timeline
 COLOR = sys.stdout.isatty() and os.environ.get("NO_COLOR") is None
 def c(code, s): return f"\033[{code}m{s}\033[0m" if COLOR else s
 def bold(s): return c("1", s)
@@ -43,6 +46,17 @@ def parse_fps(s):
     f = int(float(s.lower().replace("hz", "").replace("fps", "")))
     if not 1 <= f <= 240: raise ValueError("frame rate must be between 1 and 240")
     return f
+
+def parse_idle(s):
+    v = float(s.lower().replace("seconds", "").replace("sec", "").replace("s", "").strip() or 0)
+    if not 0 <= v <= 600: raise ValueError("idle time must be between 0 and 600 seconds")
+    return v
+
+def parse_output(s):
+    s = s.strip().lower()
+    s = {"1": "video", "video": "video", "2": "images", "images": "images", "image": "images", "stills": "images", "3": "images"}.get(s)
+    if s is None: raise ValueError("choose 1 (video) or 2 (3 images)")
+    return s
 
 def size_for(width, aspect):
     a, b = ASPECTS[aspect]; h = round(width * b / a); return width, h - (h % 2)
@@ -82,6 +96,10 @@ def find_blender():
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--laptop", help="laptop slug, e.g. fw16 (default: ask)"); ap.add_argument("--width", type=parse_width); ap.add_argument("--aspect", type=parse_aspect); ap.add_argument("--fps", type=parse_fps)
+    ap.add_argument("--idle-closed", type=parse_idle, metavar="SEC", help="extra seconds to hold the closed laptop (default 0)")
+    ap.add_argument("--idle-open", type=parse_idle, metavar="SEC", help="extra seconds to hold the opened laptop (default 0)")
+    ap.add_argument("--idle-exploded", type=parse_idle, metavar="SEC", help="extra seconds to hold the exploded view with labels (default 0)")
+    ap.add_argument("--stills", action="store_true", help="export 3 images (closed, open, exploded) instead of a video; no frame rate or idle time")
     ap.add_argument("--blender"); ap.add_argument("--jobs", type=int, default=os.cpu_count() or 4, help="parallel overlay-composite processes")
     ap.add_argument("--only", help="render only these output frame numbers, e.g. 1,271 (smoke test)")
     ap.add_argument("--yes", action="store_true", help="skip the confirmation question")
@@ -90,20 +108,32 @@ def main():
     print()
     print(bold("  FRAMEWORK LAPTOPS  -  blueprint exploded view"))
     print(dim("  official CAD, rendered in Blender - 18 s seamless loop\n"))
-    interactive = sys.stdin.isatty() and not (a.laptop and a.width and a.aspect and a.fps)
+    interactive = sys.stdin.isatty() and not (a.laptop and a.width and a.aspect and (a.fps or a.stills))
     slug, ldir = pick_laptop(a.laptop, interactive); L = laptops.load_module(ldir)
     if interactive:
         print()
-        print(bold("  1/3  Pixel width"))
+        print(bold("  1/5  Pixel width"))
         a.width = a.width or ask("width in px (e.g. 1280, 1920, 2560, 3840)", 1920, parse_width)
-        print(bold("\n  2/3  Aspect ratio"))
+        print(bold("\n  2/5  Aspect ratio"))
         print("       1) 16:9   standard widescreen\n       2) 3:2    taller frame")
         a.aspect = a.aspect or ask("choose", 1, parse_aspect)
-        print(bold("\n  3/3  Frame rate"))
-        a.fps = a.fps or ask("frames per second (Hz)", 30, parse_fps)
-    a.width, a.aspect, a.fps = a.width or 1920, a.aspect or "16:9", a.fps or 30
-    W, H = size_for(a.width, a.aspect); nframes = round(DURATION * a.fps)
-    only = [int(x) for x in a.only.split(",")] if a.only else list(range(1, nframes + 1))
+        print(bold("\n  3/5  Output"))
+        print("       1) video     18 s seamless loop (mp4)\n       2) 3 images  closed, opened and exploded (png), no video")
+        a.stills = a.stills or ask("choose", 1, parse_output) == "images"
+        if not a.stills:
+            print(bold("\n  4/5  Frame rate"))
+            a.fps = a.fps or ask("frames per second (Hz)", 30, parse_fps)
+            print(bold("\n  5/5  Idle time"))
+            print(dim("       the animation stands still in three places; add extra seconds to each (0 = standard timing)"))
+            if a.idle_closed is None: a.idle_closed = ask("extra seconds, closed laptop", 0, parse_idle)
+            if a.idle_open is None: a.idle_open = ask("extra seconds, opened laptop", 0, parse_idle)
+            if a.idle_exploded is None: a.idle_exploded = ask("extra seconds, exploded with labels", 0, parse_idle)
+    a.width, a.aspect = a.width or 1920, a.aspect or "16:9"
+    if a.stills: a.fps, idle = STILL_FPS, (0.0, 0.0, 0.0)             # stills use the standard timeline
+    else: a.fps = a.fps or 30; idle = tuple(v or 0.0 for v in (a.idle_closed, a.idle_open, a.idle_exploded))
+    W, H = size_for(a.width, a.aspect); duration = DURATION + sum(idle); nframes = round(duration * a.fps)
+    if a.stills: only = still_frames(L, a.fps)                         # middle of each hold: closed, open, exploded (labels fully shown)
+    else: only = [int(x) for x in a.only.split(",")] if a.only else list(range(1, nframes + 1))
 
     blender = a.blender or find_blender()
     if not blender and interactive: blender = ask("path to the Blender executable", "", lambda s: s if os.path.exists(s) else (_ for _ in ()).throw(ValueError("file not found")))
@@ -111,15 +141,19 @@ def main():
     if not shutil.which("ffmpeg"): sys.exit("ffmpeg not found on PATH")
 
     print(f"\n  {bold('Laptop')}   Framework {L.TITLE.title()}")
-    print(f"  {bold('Output')}   {W} x {H}  ({a.aspect})  @ {a.fps} fps  -  {nframes} frames, {nframes / a.fps:.0f} s")
+    if a.stills: print(f"  {bold('Output')}   {W} x {H}  ({a.aspect})  -  3 images (closed, opened, exploded)")
+    else:
+        print(f"  {bold('Output')}   {W} x {H}  ({a.aspect})  @ {a.fps} fps  -  {nframes} frames, {duration:g} s")
+        if any(idle): print(f"  {bold('Idle')}     +{idle[0]:g} s closed, +{idle[1]:g} s opened, +{idle[2]:g} s exploded")
     print(f"  {bold('Blender')}  {blender}")
     ensure_scene(slug, ldir, blender)
     sid = scene_id(ldir); print(f"  {bold('Scene')}    {sid}  (frames are cached per scene build; older builds' frames are ignored)")
     if interactive and not a.yes and input(f"\n  {cyan('>')} start render? {dim('[Y/n]')} ").strip().lower() in ("n", "no"): sys.exit("aborted")
     print()
 
-    env = dict(os.environ, FW_LAPTOP=slug, FW_RES=f"{W}x{H}", FW_FPS=str(a.fps))
-    tag = f"{slug}_{W}x{H}_{a.fps}_{sid}"; rd, cd = os.path.join(ROOT, "render", tag), os.path.join(ROOT, "render", "comp_" + tag)
+    env = dict(os.environ, FW_LAPTOP=slug, FW_RES=f"{W}x{H}", FW_FPS=str(a.fps), FW_IDLE=",".join(f"{v:g}" for v in idle))
+    tag = f"{slug}_{W}x{H}_{a.fps}_{sid}" + ("_idle" + "-".join(f"{v:g}" for v in idle) if any(idle) else "")
+    rd, cd = os.path.join(ROOT, "render", tag), os.path.join(ROOT, "render", "comp_" + tag)       # the tag includes the idle times: they shift what each frame number shows
     os.makedirs(rd, exist_ok=True); os.makedirs(cd, exist_ok=True)
     todo = [f for f in only if not os.path.exists(os.path.join(rd, f"f{f:04d}.json"))]
     print(f"  {len(todo)} of {len(only)} frames to render" + (" (rest found from a previous run)" if len(todo) < len(only) else ""))
@@ -131,10 +165,19 @@ def main():
     with ProcessPoolExecutor(jobs) as ex:
         list(ex.map(lambda_compose, [(rd, cd, ch, env) for ch in chunks]))
     out = os.path.join(ROOT, "out"); os.makedirs(out, exist_ok=True); mp4 = os.path.join(out, f"{slug}_blueprint_{W}x{H}_{a.fps}.mp4")
+    if a.stills:
+        names = ("closed", "open", "exploded")
+        for n, f in zip(names, only): shutil.copy(os.path.join(cd, f"c{f:04d}.png"), os.path.join(out, f"{slug}_blueprint_{W}x{H}_{n}.png"))
+        print(f"\n  {bold('done')} -> {out}{os.sep}{slug}_blueprint_{W}x{H}_{{{','.join(names)}}}.png\n"); return
     if a.only: print("  --only given: skipping video encode, composites are in", cd); return
     print("  encoding ...")
     subprocess.run(["ffmpeg", "-y", "-v", "error", "-framerate", str(a.fps), "-i", os.path.join(cd, "c%04d.png"), "-c:v", "libx264", "-crf", "14", "-preset", "slow", "-pix_fmt", "yuv420p", "-movflags", "+faststart", mp4], check=True)
     print(f"\n  {bold('done')} -> {mp4}\n")
+
+def still_frames(L, fps):
+    """Output frame numbers in the middle of the closed, open and exploded holds (standard timing; same constants as scripts/fwconfig.py)."""
+    T = dict(T_OPEN0=1.5, T_OPEN1=3.2, T_DIMS=4.8, T_EXPLODE=7.6, T_HOLD=11.6, **getattr(L, "TIMING", {}))
+    return [round(m * fps) + 1 for m in (T["T_OPEN0"] / 2, (T["T_OPEN1"] + T["T_DIMS"]) / 2, (T["T_EXPLODE"] + T["T_HOLD"]) / 2)]
 
 def ensure_scene(slug, ldir, blender):
     """The scene (<laptop dir>/scene.blend) is shipped; if it is missing, bake it from the laptop's cad/ data."""

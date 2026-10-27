@@ -11,8 +11,11 @@ FPS = int(os.environ.get("FW_FPS", 30))
 RES = tuple(int(v) for v in os.environ.get("FW_RES", "1920x1080").split("x"))
 SAMPLES = int(os.environ.get("FW_SAMPLES", 24))
 BAKED_FPS = 30                          # the .blend animation is keyed once per 1/30 s; any output fps is sampled from it (render_frames.py)
-DURATION = 18.0
-BAKED_NFRAMES = int(BAKED_FPS * DURATION)
+BASE_DURATION = 18.0                    # length of the baked animation
+BAKED_NFRAMES = int(BAKED_FPS * BASE_DURATION)
+# optional extra idle time [s] in the three still holds (closed, open, exploded), "FW_IDLE=closed,open,exploded"; the video gets that much longer
+IDLE = tuple(max(0.0, float(v)) for v in (os.environ.get("FW_IDLE") or "0,0,0").split(","))
+DURATION = BASE_DURATION + sum(IDLE)
 NFRAMES = int(round(FPS * DURATION))
 LID_ANGLE = getattr(L, "LID_ANGLE", 105.0)     # deg, presentational hero pose
 HINGE_CAD = L.HINGE_CAD                        # hinge pin axis (CAD Y, Z), read from the hinge parts' cylindrical faces
@@ -44,6 +47,18 @@ for _k, _v in getattr(L, "TIMING", {}).items(): globals()[_k] = _v        # opti
 
 def ss(x):
     x = min(1.0, max(0.0, x)); return x * x * x * (x * (x * 6 - 15) + 10)
+
+def hold_mids():                         # base-timeline middle of each still hold: closed, open, exploded (labels are fully shown at the exploded one)
+    return (T_OPEN0 / 2, (T_OPEN1 + T_DIMS) / 2, (T_EXPLODE + T_HOLD) / 2)
+
+def warp(t):
+    """Output time -> baked-animation time. The extra idle seconds (IDLE) are inserted by freezing the animation at the middle of each hold."""
+    shift = 0.0
+    for m, x in zip(hold_mids(), IDLE):
+        if t < m + shift: break
+        if t < m + shift + x: return m
+        shift += x
+    return t - shift
 
 def lid_open(t):                         # 0 = closed, 1 = open hero pose; loop starts and ends closed
     if t < T_OPEN0: return 0.0
