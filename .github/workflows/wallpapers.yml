@@ -31,17 +31,21 @@ jobs:
           cache: pip
           cache-dependency-path: requirements.txt
 
-      - name: Install Blender, ffmpeg and Python dependencies
+      # Ubuntu's blender package links the system libembree4 and segfaults in rtcSetSharedGeometryBuffer while building the BVH,
+      # so use the official Blender build (bundled Embree) instead.
+      - name: Install Blender (official 4.0.2 build), ffmpeg and Python dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends blender ffmpeg libgl1 libfontconfig1
+          sudo apt-get install -y --no-install-recommends ffmpeg libgl1 libfontconfig1 libxi6 libxxf86vm1 libxfixes3 libxrender1 libxkbcommon0 libsm6 libegl1
+          curl -fsSL https://download.blender.org/release/Blender4.0/blender-4.0.2-linux-x64.tar.xz | tar -xJ -C "$RUNNER_TEMP"
+          echo "BLENDER=$RUNNER_TEMP/blender-4.0.2-linux-x64/blender" >> "$GITHUB_ENV"
           pip install -r requirements.txt
 
       - name: Render video (1920 px, 30 fps)
-        run: python run.py --laptop ${{ matrix.laptop }} --width 1920 --aspect ${{ matrix.aspect }} --fps 30 --yes
+        run: python run.py --laptop ${{ matrix.laptop }} --width 1920 --aspect ${{ matrix.aspect }} --fps 30 --blender "$BLENDER" --yes
 
       - name: Export the three still images (4K, rendered separately from the video frames)
-        run: python run.py --laptop ${{ matrix.laptop }} --stills --width 3840 --aspect ${{ matrix.aspect }} --yes
+        run: python run.py --laptop ${{ matrix.laptop }} --stills --width 3840 --aspect ${{ matrix.aspect }} --blender "$BLENDER" --yes
 
       - uses: actions/upload-artifact@v4
         with:

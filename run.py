@@ -157,9 +157,13 @@ def main():
     os.makedirs(rd, exist_ok=True); os.makedirs(cd, exist_ok=True)
     todo = [f for f in only if not os.path.exists(os.path.join(rd, f"f{f:04d}.json"))]
     print(f"  {len(todo)} of {len(only)} frames to render" + (" (rest found from a previous run)" if len(todo) < len(only) else ""))
-    if todo:
-        blend = os.path.join(ldir, "scene.blend")
-        run_blender([blender, "-b", blend, "--python", os.path.join(ROOT, "scripts", "render_frames.py"), "--", rd, *map(str, todo)], env, len(todo))
+    blend = os.path.join(ldir, "scene.blend")
+    while todo:
+        err = run_blender([blender, "-b", blend, "--python", os.path.join(ROOT, "scripts", "render_frames.py"), "--", rd, *map(str, todo)], env, len(todo))
+        left = [f for f in todo if not os.path.exists(os.path.join(rd, f"f{f:04d}.json"))]
+        if not err: break
+        if len(left) >= len(todo): sys.exit(err)                    # crashed without finishing a single frame: not a random crash, give up
+        print(c("33", f"  Blender crashed after {len(todo) - len(left)} frames, restarting it for the remaining {len(left)} ...")); todo = left   # (finished frames are kept)
     print("  compositing overlay ...")
     jobs = max(1, min(a.jobs, len(only))); chunks = [only[i::jobs] for i in range(jobs)]
     with ProcessPoolExecutor(jobs) as ex:
@@ -194,12 +198,12 @@ def run_blender(cmd, env, total):
         if line.startswith("Saved:") and (os.sep + "b" + os.sep) in line:
             done += 1; print(f"\r  rendering  {done} / {total}", end="", flush=True)
     p.wait(); print()
-    if p.returncode:
+    if p.returncode:                                              # -> error text (None = ok)
         crash = next((l.split("Writing:", 1)[1].strip() for l in reversed(tail) if l.startswith("Writing:") and l.rstrip().endswith(".crash.txt")), None)
         info = ""
         if crash and os.path.exists(crash):                       # Blender's own crash report (stack trace) - the useful part when it dies in a CI container
             with open(crash, errors="replace") as fh: info = f"\n--- {crash} ---\n" + "".join(fh.readlines()[:60])
-        sys.exit(f"Blender failed (exit code {p.returncode}):\n" + "\n".join(tail) + info)
+        return f"Blender failed (exit code {p.returncode}):\n" + "\n".join(tail) + info
 
 def lambda_compose(job):
     rd, cd, chunk, env = job
