@@ -1,0 +1,6 @@
+# downloaded source CAD (scripts/fetch_cad.py)
+cad/*.stp
+cad/*.dxf
+cad/*.zip
+cad/*/
+__pycache__/

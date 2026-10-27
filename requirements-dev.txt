@@ -1,0 +1,9 @@
+-r requirements.txt
+# CAD import / scene authoring (scripts/export_parts.py, rebuild_cad.py, laptop tools)
+cadquery
+trimesh
+rtree
+shapely
+ezdxf
+mapbox-earcut
+matplotlib

@@ -1,0 +1,613 @@
+{
+ "groups": {
+  "A_COVER": {
+   "label": "ALUMINIUM LID COVER",
+   "side": "lid",
+   "offset": 150,
+   "parts": {
+    "GFW_NB_ID_COVER_A": 1,
+    "GFW00_3H_NB_ID_COVER_LOGO_1": 1
+   },
+   "lo": [
+    -148.31495666503906,
+    1.6999188661575317,
+    5.3373943956103176e-05
+   ],
+   "hi": [
+    148.31495666503906,
+    5.100036144256592,
+    228.9799346923828
+   ],
+   "n": 2,
+   "anchorL": [
+    -147.6649932861328,
+    -194.7498016357422,
+    3.450000047683716
+   ],
+   "anchorR": [
+    147.6649932861328,
+    -194.7498016357422,
+    3.450000047683716
+   ]
+  },
+  "PLATES": {
+   "label": "HINGE PLATES + LID FRAME",
+   "side": "lid",
+   "offset": 118,
+   "parts": {
+    "GFW00_3H_NB_ID_BEZEL_1_2": 1,
+    "GFW00_3H_NB_ID_HINGE_PLATE_L_1": 1,
+    "GFW00_3H_NB_ID_HINGE_PLATE_R_1": 1
+   },
+   "lo": [
+    -147.31500244140625,
+    1.7000000476837158,
+    1.0
+   ],
+   "hi": [
+    147.31500244140625,
+    4.099999904632568,
+    227.97999572753906
+   ],
+   "n": 3,
+   "anchorL": [
+    -147.31488037109375,
+    -221.97999572753906,
+    4.099999904632568
+   ],
+   "anchorR": [
+    147.31495666503906,
+    -221.97999572753906,
+    4.099999904632568
+   ]
+  },
+  "PANEL": {
+   "label": "DISPLAY PANEL",
+   "side": "lid",
+   "offset": 86,
+   "parts": {
+    "GFW00_3H_NB_ID_BEZEL_1_1": 1
+   },
+   "lo": [
+    -143.11500549316406,
+    0.5,
+    26.670000076293945
+   ],
+   "hi": [
+    143.11500549316406,
+    1.600000023841858,
+    217.92999267578125
+   ],
+   "n": 1,
+   "anchorL": [
+    -143.11500549316406,
+    -217.52999877929688,
+    1.600000023841858
+   ],
+   "anchorR": [
+    143.11500549316406,
+    -217.52999877929688,
+    1.600000023841858
+   ]
+  },
+  "BEZEL": {
+   "label": "DISPLAY BEZEL + CAMERA",
+   "side": "lid",
+   "offset": 54,
+   "parts": {
+    "GFW00_3H_NB_ID_BEZEL_1_3": 1,
+    "GFW00_3H_NB_ID_BEZEL_ALS_LENS_1": 1,
+    "GFW00_3H_NB_ID_BEZEL_MIC_SWITCH": 1,
+    "GFW00_3H_NB_ID_BEZEL_CAM_SWITCH": 1,
+    "GFW00_3H_NB_ID_BEZEL_MIC_BRK_1": 1,
+    "GFW00_3H_NB_ID_BEZEL_CAM_BRK_1": 1,
+    "GFW00_3H_NB_ID_BEZEL_CAM_LENS_1": 1,
+    "GFW00_3H_NB_ID_BEZEL_LED_1": 1
+   },
+   "lo": [
+    -148.01499938964844,
+    -4.313184763304889e-05,
+    12.53499984741211
+   ],
+   "hi": [
+    148.01499938964844,
+    1.601217269897461,
+    228.67996215820312
+   ],
+   "n": 8,
+   "anchorL": [
+    -148.01490783691406,
+    -221.97897338867188,
+    1.5999982357025146
+   ],
+   "anchorR": [
+    148.0149688720703,
+    -221.9796600341797,
+    1.599998950958252
+   ]
+  },
+  "HINGE": {
+   "label": "HINGE CAP",
+   "side": "lid",
+   "offset": 30,
+   "parts": {
+    "GFW00_3H_NB_ID_BEZEL_HINGE_CAP_": 1
+   },
+   "lo": [
+    -129.3000030517578,
+    -8.28000545501709,
+    -1.1379786002407855e-14
+   ],
+   "hi": [
+    129.3000030517578,
+    2.509999990463257,
+    12.335000038146973
+   ],
+   "n": 1,
+   "anchorL": [
+    -128.3000030517578,
+    -10.56157398223877,
+    2.2248499393463135
+   ],
+   "anchorR": [
+    128.3000030517578,
+    -10.56157398223877,
+    2.2248499393463135
+   ]
+  },
+  "KEYS": {
+   "label": "KEYBOARD",
+   "side": "base",
+   "offset": 26,
+   "parts": {
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V5_2": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V5_3": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V5_4": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V5_5": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V5_6": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V5_7": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V5_8": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V5_9": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_10": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_11": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_12": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_13": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_14": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_15": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_16": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_17": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_18": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_19": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_20": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_21": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_22": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_23": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_24": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_25": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_26": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_27": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_28": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_29": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_30": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_31": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_32": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_33": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_34": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_35": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_36": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_37": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_38": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_39": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_40": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_41": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_42": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_43": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_44": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_45": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_46": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_47": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_48": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_49": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_50": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_51": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_52": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_53": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_54": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_55": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_56": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_57": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_58": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_59": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_60": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_61": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_62": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_63": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_64": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_65": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_66": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_67": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_68": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_69": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_70": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_71": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_72": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_73": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_74": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_75": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_76": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_77": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_78": 1,
+    "FRAMEWORK_ID_KEYBOARD_ANSI_V_79": 1
+   },
+   "lo": [
+    -138.38037109375,
+    -1.55,
+    28.830000000000013
+   ],
+   "hi": [
+    138.38037109375,
+    0.19394500255584712,
+    133.83
+   ],
+   "n": 78,
+   "anchorL": [
+    -138.22279357910156,
+    -121.6820269393921,
+    -0.04431836605072026
+   ],
+   "anchorR": [
+    138.2223358154297,
+    -121.71334369659425,
+    -0.0449964284896851
+   ]
+  },
+  "FPR": {
+   "label": "FINGERPRINT READER",
+   "side": "base",
+   "offset": 26,
+   "parts": {
+    "GFW00_3H_NB_ID_C_COVER_REFER_4": 1
+   },
+   "lo": [
+    133.98500061035156,
+    -0.800000011920929,
+    10.300000190734863
+   ],
+   "hi": [
+    144.14500427246094,
+    0.0,
+    20.459999084472656
+   ],
+   "n": 1,
+   "anchorL": [
+    133.98500061035156,
+    -20.15999984741211,
+    0.0
+   ],
+   "anchorR": [
+    144.14500427246094,
+    -20.15999984741211,
+    0.0
+   ]
+  },
+  "HAPTIC": {
+   "label": "TOUCHPAD",
+   "side": "base",
+   "offset": 12,
+   "parts": {
+    "GFW00_3H_NB_ID_C_COVER_REFER_3": 1
+   },
+   "lo": [
+    -57.5,
+    -0.800000011920929,
+    142.58999633789062
+   ],
+   "hi": [
+    57.5,
+    0.0,
+    219.19000244140625
+   ],
+   "n": 1,
+   "anchorL": [
+    -57.20000076293945,
+    -216.19000244140625,
+    0.0
+   ],
+   "anchorR": [
+    57.20000076293945,
+    -216.19000244140625,
+    0.0
+   ]
+  },
+  "C_COVER": {
+   "label": "ALUMINIUM C-COVER",
+   "side": "base",
+   "offset": 0,
+   "parts": {
+    "GFW00_3H_NB_ID_C_COVER_REFER_2": 1
+   },
+   "lo": [
+    -148.31494140625,
+    -1.8436977863311768,
+    0.0
+   ],
+   "hi": [
+    148.31494140625,
+    1.3374850823311135e-05,
+    228.97999572753906
+   ],
+   "n": 1,
+   "anchorL": [
+    -147.8148651123047,
+    -221.97900390625,
+    -1.818283817556221e-05
+   ],
+   "anchorR": [
+    147.81497192382812,
+    -221.979736328125,
+    1.8377575372596766e-07
+   ]
+  },
+  "FRAME": {
+   "label": "HINGE FRAME",
+   "side": "base",
+   "offset": -18,
+   "parts": {
+    "GFW00_3H_NB_ID_FRAME_1": 1
+   },
+   "lo": [
+    -130.9149932861328,
+    -8.300093650817871,
+    0.949999988079071
+   ],
+   "hi": [
+    130.9149932861328,
+    -1.0,
+    13.420000076293945
+   ],
+   "n": 1,
+   "anchorL": [
+    -130.11500549316406,
+    -12.119999885559082,
+    -1.0
+   ],
+   "anchorR": [
+    130.11500549316406,
+    -12.119999885559082,
+    -1.0
+   ]
+  },
+  "MAINBOARD": {
+   "label": "MAINBOARD",
+   "side": "base",
+   "offset": -68,
+   "parts": {
+    "MAINBOARD_OUTLINE": 1
+   },
+   "lo": [
+    -117.25,
+    -9.199999809265137,
+    9.885000228881836
+   ],
+   "hi": [
+    117.25,
+    -5.199999809265137,
+    116.91500091552734
+   ],
+   "n": 1,
+   "anchorL": [
+    -116.3116455078125,
+    -25.072416305541992,
+    -5.199999809265137
+   ],
+   "anchorR": [
+    116.28728485107422,
+    -37.07497787475586,
+    -5.199999809265137
+   ]
+  },
+  "BATTERY": {
+   "label": "BATTERY",
+   "side": "base",
+   "offset": -68,
+   "parts": {
+    "FRAME": 1,
+    "PCB": 1,
+    "CELL": 4,
+    "E01": 1,
+    "E03": 1,
+    "GFW00_S-50459-010H_1": 1,
+    "WIRE1": 1,
+    "LADAI": 1,
+    "GFW00_SCREW_M2X3L_CAPTIVE_1": 3,
+    "NTC": 1,
+    "TAPE": 1,
+    "COMPOUND": 4,
+    "GFW30_LOW_SCREW_E_RING_1": 3
+   },
+   "lo": [
+    -120.0,
+    -10.020000457763672,
+    121.65000009536743
+   ],
+   "hi": [
+    120.0,
+    -2.3841546058654783,
+    222.25
+   ],
+   "n": 23,
+   "anchorL": [
+    -119.83999633789062,
+    -214.50999450683594,
+    -3.7300000190734863
+   ],
+   "anchorR": [
+    119.83999633789062,
+    -214.50999450683594,
+    -3.7300000190734863
+   ]
+  },
+  "D_COVER": {
+   "label": "ALUMINIUM D-COVER",
+   "side": "base",
+   "offset": -88,
+   "parts": {
+    "GFW00_3H_NB_ID_CARD_LED_LENS_2": 1,
+    "GFW00_3H_NB_ID_CARD_LED_LENS_3": 1,
+    "GFW00_3H_NB_ID_D_COVER_REFER_2": 1,
+    "GFW00_3H_NB_ID_D_COVER_REFER_3": 1,
+    "GFW00_3H_NB_ID_D_COVER_REFER_4": 1
+   },
+   "lo": [
+    -148.31500244140625,
+    -13.350000381469727,
+    0.0
+   ],
+   "hi": [
+    148.31500244140625,
+    -1.0,
+    228.97999572753906
+   ],
+   "n": 5,
+   "anchorL": [
+    -148.2128143310547,
+    -200.90664672851562,
+    -4.579592227935791
+   ],
+   "anchorR": [
+    148.2128143310547,
+    -200.79786682128906,
+    -4.58723258972168
+   ]
+  },
+  "CARDS_R": {
+   "label": "EXPANSION CARDS",
+   "side": "base",
+   "offset": -88,
+   "parts": {
+    "GFW00_3H_NB_ID_USBC_CARD_1": 1,
+    "GFW00_3H_NB_ID_SD_CARD_1": 1
+   },
+   "lo": [
+    118.31500244140625,
+    -10.550000190734863,
+    27.799999237060547
+   ],
+   "hi": [
+    148.31500244140625,
+    -3.75,
+    98.4000015258789
+   ],
+   "n": 2,
+   "anchorL": [
+    118.31500244140625,
+    -98.0999984741211,
+    -3.75
+   ],
+   "anchorR": [
+    148.31500244140625,
+    -89.18000030517578,
+    -5.593782424926758
+   ]
+  },
+  "CARDS_L": {
+   "label": "EXPANSION CARDS",
+   "side": "base",
+   "offset": -88,
+   "parts": {
+    "GFW00_3H_NB_ID_USBA_CARD_1": 1,
+    "GFW00_3H_NB_ID_HDMI_CARD_1": 1
+   },
+   "lo": [
+    -148.31500244140625,
+    -10.550000190734863,
+    27.799999237060547
+   ],
+   "hi": [
+    -118.31500244140625,
+    -3.75,
+    98.4000015258789
+   ],
+   "n": 2,
+   "anchorL": [
+    -148.31500244140625,
+    -89.3499984741211,
+    -4.7937822341918945
+   ],
+   "anchorR": [
+    -118.31500244140625,
+    -98.0999984741211,
+    -3.75
+   ]
+  }
+ },
+ "hinge_bl": [
+  0.0,
+  -4.199999809265137,
+  -4.0
+ ],
+ "used": 130,
+ "dropped": 1,
+ "hold_y": {
+  "A_COVER": {
+   "L": 0.17970573902130127,
+   "R": 0.3247390389442444
+  },
+  "PLATES": {
+   "L": 0.13225054740905762,
+   "R": 0.2769400477409363
+  },
+  "PANEL": {
+   "L": 0.13752484321594238,
+   "R": 0.2780892848968506
+  },
+  "BEZEL": {
+   "L": 0.12423598766326904,
+   "R": 0.2696119546890259
+  },
+  "HINGE": {
+   "L": 0.4729188084602356,
+   "R": 0.598932296037674
+  },
+  "KEYS": {
+   "L": 0.46253955364227295,
+   "R": 0.5983094573020935
+  },
+  "FPR": {
+   "L": 0.5649936199188232,
+   "R": 0.5699830949306488
+  },
+  "HAPTIC": {
+   "L": 0.5535340011119843,
+   "R": 0.6097145974636078
+  },
+  "C_COVER": {
+   "L": 0.5299026668071747,
+   "R": 0.6750834584236145
+  },
+  "FRAME": {
+   "L": 0.5044254064559937,
+   "R": 0.632221519947052
+  },
+  "MAINBOARD": {
+   "L": 0.6014117002487183,
+   "R": 0.7193216681480408
+  },
+  "BATTERY": {
+   "L": 0.6554722487926483,
+   "R": 0.7731764614582062
+  },
+  "D_COVER": {
+   "L": 0.6705362200737,
+   "R": 0.8160863816738129
+  },
+  "CARDS_R": {
+   "L": 0.798022672533989,
+   "R": 0.8129515647888184
+  },
+  "CARDS_L": {
+   "L": 0.6071284711360931,
+   "R": 0.6228855550289154
+  }
+ }
+}
