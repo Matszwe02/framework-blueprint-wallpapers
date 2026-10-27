@@ -36,7 +36,7 @@ Other flags: `--blender PATH`, `--jobs N` (parallel overlay compositing), `--onl
 
 The animation is 18 s long by default and loops seamlessly (starts and ends closed): frames = 18 x fps. Any frame rate works (the animation keyed at 30 fps in the scene is sampled between keys).
 Frames are kept in `render/<laptop>_<W>x<H>_<fps>_<scene id>/` (the scene id is printed at start): a stopped run resumes, but frames rendered from an older build are never reused.
-Output: `out/<laptop>_blueprint_<W>x<H>_<fps>.mp4`, or with `--stills` `out/<laptop>_blueprint_<W>x<H>_{closed,open,exploded}.png`.
+Output: `out/<laptop>_blueprint_<W>x<H>_<fps>.mp4`, or with `--stills` `out/<laptop>_blueprint_<W>x<H>_{{closed,open,exploded}}.png`.
 
 ## Licensing
 Unofficial fan project, not affiliated with or endorsed by Framework Computer Inc; "Framework" and the gear logo are its trademarks. Code: MIT (`LICENSE`). The CAD and everything rendered from it: CC BY 4.0, adapted from Framework's official CAD, changes listed in `NOTICE.md`. Fonts: SIL OFL (`fonts/`). The footer of every video and image carries the source, the licence and the disclaimer.
