@@ -16,6 +16,15 @@ def font(f, size): return skia.Font(skia.Typeface.MakeFromFile(FD + f), size * S
 F_TITLE, F_H, F_L, F_S, F_M = font("Rajdhani-Bold.ttf", 34), font("Rajdhani-Bold.ttf", 13.5), font("Rajdhani-Medium.ttf", 11), font("ShareTechMono-Regular.ttf", 9.2), font("ShareTechMono-Regular.ttf", 12)
 F_BIG = font("Rajdhani-Bold.ttf", 66)
 
+# colour grade (run.py --hue / --saturation): hue rotation about the luma axis + chroma scale on the finished frame; 0 deg / 1.0 = the original blue
+HUE = float(os.environ.get("FW_HUE") or 0.0); SAT = float(os.environ.get("FW_SAT") or 1.0)
+def grade(img):
+    if HUE % 360 == 0 and SAT == 1.0: return img
+    c, s = math.cos(math.radians(HUE)), -math.sin(math.radians(HUE))
+    M = np.array([[0.299, 0.587, 0.114], [0.596, -0.274, -0.322], [0.211, -0.523, 0.312]]); Mi = np.linalg.inv(M)
+    R = np.array([[1, 0, 0], [0, c * SAT, -s * SAT], [0, s * SAT, c * SAT]])
+    return np.clip(img @ (Mi @ R @ M).T.astype(np.float32), 0, 1)
+
 DISCLAIMER = "UNOFFICIAL FAN PROJECT, NOT AFFILIATED WITH OR ENDORSED BY FRAMEWORK COMPUTER INC.  FRAMEWORK AND THE GEAR LOGO ARE ITS TRADEMARKS"   # footer, every video and still (licensing: see NOTICE.md)
 WHITE = (235, 244, 255); DIM = (150, 175, 230); ACC = (140, 215, 255)
 
@@ -181,4 +190,4 @@ for f in frames:
     ov_a = ov[..., 3:]; ov_rgb = ov[..., :3]
     ov_rgb = ov_rgb  # skia N32 premul (BGRA/RGBA depends)
     out = img * (1 - ov_a) + ov_rgb * 1.0
-    Image.fromarray((np.clip(out, 0, 1) * 255).astype(np.uint8)).save(f"{od}/c{f:04d}.png")
+    Image.fromarray((grade(np.clip(out, 0, 1)) * 255).astype(np.uint8)).save(f"{od}/c{f:04d}.png")

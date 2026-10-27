@@ -58,6 +58,19 @@ def parse_output(s):
     if s is None: raise ValueError("choose 1 (video) or 2 (3 images)")
     return s
 
+HUES = {"blue": 0, "purple": 40, "violet": 40, "magenta": 80, "pink": 100, "red": 135, "orange": 170, "yellow": 195, "green": 270, "teal": 320, "cyan": 345}   # name -> hue shift in degrees from the original blue
+
+def parse_hue(s):
+    s = s.strip().lower()
+    if s in HUES: return float(HUES[s])
+    try: return float(s.replace("deg", "").replace("°", "")) % 360
+    except ValueError: raise ValueError("hue: a colour name (" + ", ".join(HUES) + ") or a shift in degrees")
+
+def parse_sat(s):
+    v = float(s.strip().rstrip("%")) / (100 if s.strip().endswith("%") else 1)
+    if not 0 <= v <= 3: raise ValueError("saturation must be between 0 (grey) and 3; 1 = original")
+    return v
+
 def size_for(width, aspect):
     a, b = ASPECTS[aspect]; h = round(width * b / a); return width, h - (h % 2)
 
@@ -99,6 +112,8 @@ def main():
     ap.add_argument("--idle-closed", type=parse_idle, metavar="SEC", help="extra seconds to hold the closed laptop (default 0)")
     ap.add_argument("--idle-open", type=parse_idle, metavar="SEC", help="extra seconds to hold the opened laptop (default 0)")
     ap.add_argument("--idle-exploded", type=parse_idle, metavar="SEC", help="extra seconds to hold the exploded view with labels (default 0)")
+    ap.add_argument("--hue", type=parse_hue, help="colour: a name (" + ", ".join(HUES) + ") or degrees to rotate the hue from the original blue (default 0)")
+    ap.add_argument("--saturation", type=parse_sat, help="colour saturation, 1 = original, 0 = grey, up to 3 (default 1)")
     ap.add_argument("--stills", action="store_true", help="export 3 images (closed, open, exploded) instead of a video; no frame rate or idle time")
     ap.add_argument("--blender"); ap.add_argument("--jobs", type=int, default=os.cpu_count() or 4, help="parallel overlay-composite processes")
     ap.add_argument("--only", help="render only these output frame numbers, e.g. 1,271 (smoke test)")
@@ -112,23 +127,28 @@ def main():
     slug, ldir = pick_laptop(a.laptop, interactive); L = laptops.load_module(ldir)
     if interactive:
         print()
-        print(bold("  1/5  Pixel width"))
+        print(bold("  1/6  Pixel width"))
         a.width = a.width or ask("width in px (e.g. 1280, 1920, 2560, 3840)", 1920, parse_width)
-        print(bold("\n  2/5  Aspect ratio"))
+        print(bold("\n  2/6  Aspect ratio"))
         print("       1) 16:9   standard widescreen\n       2) 3:2    taller frame")
         a.aspect = a.aspect or ask("choose", 1, parse_aspect)
-        print(bold("\n  3/5  Output"))
+        print(bold("\n  3/6  Colour"))
+        print(dim("       hue: " + ", ".join(HUES) + ", or degrees; saturation 1 = original"))
+        a.hue = a.hue if a.hue is not None else ask("hue", "blue", parse_hue)
+        a.saturation = a.saturation if a.saturation is not None else ask("saturation", 1, parse_sat)
+        print(bold("\n  4/6  Output"))
         print("       1) video     18 s seamless loop (mp4)\n       2) 3 images  closed, opened and exploded (png), no video")
         a.stills = a.stills or ask("choose", 1, parse_output) == "images"
         if not a.stills:
-            print(bold("\n  4/5  Frame rate"))
+            print(bold("\n  5/6  Frame rate"))
             a.fps = a.fps or ask("frames per second (Hz)", 30, parse_fps)
-            print(bold("\n  5/5  Idle time"))
+            print(bold("\n  6/6  Idle time"))
             print(dim("       the animation stands still in three places; add extra seconds to each (0 = standard timing)"))
             if a.idle_closed is None: a.idle_closed = ask("extra seconds, closed laptop", 0, parse_idle)
             if a.idle_open is None: a.idle_open = ask("extra seconds, opened laptop", 0, parse_idle)
             if a.idle_exploded is None: a.idle_exploded = ask("extra seconds, exploded with labels", 0, parse_idle)
-    a.width, a.aspect = a.width or 1920, a.aspect or "16:9"
+    a.width, a.aspect = a.width or 1920, a.aspect or "16:9"; hue, sat = a.hue or 0.0, 1.0 if a.saturation is None else a.saturation
+    graded = hue % 360 != 0 or sat != 1.0; ctag = f"_h{hue:g}_s{sat:g}" if graded else ""     # colour only affects the composite, so Blender frames are shared between colours
     if a.stills: a.fps, idle = STILL_FPS, (0.0, 0.0, 0.0)             # stills use the standard timeline
     else: a.fps = a.fps or 30; idle = tuple(v or 0.0 for v in (a.idle_closed, a.idle_open, a.idle_exploded))
     W, H = size_for(a.width, a.aspect); duration = DURATION + sum(idle); nframes = round(duration * a.fps)
@@ -151,9 +171,9 @@ def main():
     if interactive and not a.yes and input(f"\n  {cyan('>')} start render? {dim('[Y/n]')} ").strip().lower() in ("n", "no"): sys.exit("aborted")
     print()
 
-    env = dict(os.environ, FW_LAPTOP=slug, FW_RES=f"{W}x{H}", FW_FPS=str(a.fps), FW_IDLE=",".join(f"{v:g}" for v in idle))
+    env = dict(os.environ, FW_LAPTOP=slug, FW_RES=f"{W}x{H}", FW_FPS=str(a.fps), FW_IDLE=",".join(f"{v:g}" for v in idle), FW_HUE=f"{hue:g}", FW_SAT=f"{sat:g}")
     tag = f"{slug}_{W}x{H}_{a.fps}_{sid}" + ("_idle" + "-".join(f"{v:g}" for v in idle) if any(idle) else "")
-    rd, cd = os.path.join(ROOT, "render", tag), os.path.join(ROOT, "render", "comp_" + tag)       # the tag includes the idle times: they shift what each frame number shows
+    rd, cd = os.path.join(ROOT, "render", tag), os.path.join(ROOT, "render", "comp_" + tag + ctag)       # the tag includes the idle times: they shift what each frame number shows
     os.makedirs(rd, exist_ok=True); os.makedirs(cd, exist_ok=True)
     todo = [f for f in only if not os.path.exists(os.path.join(rd, f"f{f:04d}.json"))]
     print(f"  {len(todo)} of {len(only)} frames to render" + (" (rest found from a previous run)" if len(todo) < len(only) else ""))
@@ -168,11 +188,11 @@ def main():
     jobs = max(1, min(a.jobs, len(only))); chunks = [only[i::jobs] for i in range(jobs)]
     with ProcessPoolExecutor(jobs) as ex:
         list(ex.map(lambda_compose, [(rd, cd, ch, env) for ch in chunks]))
-    out = os.path.join(ROOT, "out"); os.makedirs(out, exist_ok=True); mp4 = os.path.join(out, f"{slug}_blueprint_{W}x{H}_{a.fps}.mp4")
+    out = os.path.join(ROOT, "out"); os.makedirs(out, exist_ok=True); mp4 = os.path.join(out, f"{slug}_blueprint_{W}x{H}_{a.fps}{ctag}.mp4")
     if a.stills:
         names = ("closed", "open", "exploded")
-        for n, f in zip(names, only): shutil.copy(os.path.join(cd, f"c{f:04d}.png"), os.path.join(out, f"{slug}_blueprint_{W}x{H}_{n}.png"))
-        print(f"\n  {bold('done')} -> {out}{os.sep}{slug}_blueprint_{W}x{H}_{{{','.join(names)}}}.png\n"); return
+        for n, f in zip(names, only): shutil.copy(os.path.join(cd, f"c{f:04d}.png"), os.path.join(out, f"{slug}_blueprint_{W}x{H}_{n}{ctag}.png"))
+        print(f"\n  {bold('done')} -> {out}{os.sep}{slug}_blueprint_{W}x{H}_{{{','.join(names)}}}{ctag}.png\n"); return
     if a.only: print("  --only given: skipping video encode, composites are in", cd); return
     print("  encoding ...")
     subprocess.run(["ffmpeg", "-y", "-v", "error", "-framerate", str(a.fps), "-i", os.path.join(cd, "c%04d.png"), "-c:v", "libx264", "-crf", "14", "-preset", "slow", "-pix_fmt", "yuv420p", "-movflags", "+faststart", mp4], check=True)
