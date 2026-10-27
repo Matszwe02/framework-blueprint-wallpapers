@@ -11,8 +11,8 @@ The models, the derived meshes in `*/cad/`, the baked `*/scene.blend` files and 
 
 | Laptop | Source repository | Files used |
 |--------|-------------------|------------|
-| Framework Laptop 13 | [FrameworkComputer/Framework-Laptop-13](https://github.com/FrameworkComputer/Framework-Laptop-13) (© 2026) | `Framework Laptop 13 CAD.stp`, `Battery/FWKNAQ9_G01_20210911.stp` |
-| Framework Laptop 13 Pro | [FrameworkComputer/Framework-Laptop-13](https://github.com/FrameworkComputer/Framework-Laptop-13) (© 2026) | `Framework Laptop 13 Pro CAD.stp` plus the Laptop 13 files above (cards, battery) |
+| Framework Laptop 13 | [FrameworkComputer/Framework-Laptop-13](https://github.com/FrameworkComputer/Framework-Laptop-13) (© 2026) | `Framework Laptop 13 CAD.stp`, `Battery/FWKNAQ9_G01_20210911.stp`; mainboard: 'Framework mainboard v2' by ManelTo, [Printables](https://www.printables.com/model/1058946-framework-mainboard-v2-with-freecad-files-and-step), CC BY 4.0 |
+| Framework Laptop 13 Pro | [FrameworkComputer/Framework-Laptop-13](https://github.com/FrameworkComputer/Framework-Laptop-13) (© 2026) | `Framework Laptop 13 Pro CAD.stp` plus the Laptop 13 files above (cards, battery, and the ManelTo mainboard) |
 | Framework Laptop 12 | [FrameworkComputer/Framework-Laptop-12](https://github.com/FrameworkComputer/Framework-Laptop-12) (© 2024) | `Framework Laptop 12 CAD.stp`, `Battery/Framework_Laptop_12_50_Battery.stp`, `Mainboard/FRAMEWORK_LAPTOP_12_MAINBOARD_V01.stp` |
 | Framework Laptop 16 | [FrameworkComputer/Framework-Laptop-16](https://github.com/FrameworkComputer/Framework-Laptop-16) (© 2024) | `Framework Laptop 16 with Graphics Module CAD.zip`, `Mainboard/Framework_Laptop_16_Mainboard_3D.stp`, `Hinges/framework_laptop_16_hinge_assy_asm.stp`, plus the Laptop 13 expansion cards |
 
@@ -20,7 +20,7 @@ The models, the derived meshes in `*/cad/`, the baked `*/scene.blend` files and 
 
 - The STEP models were tessellated into triangle meshes, their feature edges were extracted, and parts were grouped, recoloured and re-posed (opened, exploded, animated).
 - Expansion cards for the 13 Pro and 16 are copies of the Laptop 13 card models. Duplicate and variant parts were dropped.
-- 13 Pro and Laptop 13 mainboards use the community 3D model 'Framework Mainboard v2' (printables.com/model/1058946, `cad/mainboard.step`; not Framework's CAD, licence not verified); its placement is inferred. The Laptop 12 keycaps are generated from the openings in the input cover.
+- 13 Pro and Laptop 13 mainboards use the community 3D model 'Framework Mainboard v2' by ManelTo (<https://www.printables.com/model/1058946-framework-mainboard-v2-with-freecad-files-and-step>, CC BY 4.0, `cad/mainboard.step`; not Framework's CAD). The STEP was tessellated, re-oriented and placed in the chassis (placement inferred). The Laptop 12 keycaps are generated from the openings in the input cover.
 - The Laptop 16 battery is an estimate sized to the free space in the chassis. Framework publishes no 16 battery model.
 - Parts, dimensions and labels are therefore **approximations, not official drawings**.
 

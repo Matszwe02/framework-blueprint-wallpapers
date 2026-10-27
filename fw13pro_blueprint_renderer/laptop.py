@@ -73,5 +73,5 @@ REBUILD = [("export", "pro.stp", "parts"), ("export", "classic.stp", "cparts"), 
 SOURCES_MD = """* `Framework Laptop 13 Pro CAD.stp` (Framework-Laptop-13 repo) - chassis, display, keyboard, haptic pad, gear logo outline, ...
 * `Framework Laptop 13 CAD.stp` - the four USB-C expansion cards (the Pro CAD has none)
 * `Battery/FWKNAQ9_G01_20210911.stp` - Laptop 13 battery
-* `cad/mainboard.step` - detailed 3D mainboard (Printables 'Framework Mainboard v2', by a community author, not Framework; check its licence before redistributing);
+* `cad/mainboard.step` - detailed 3D mainboard ('Framework mainboard v2' by ManelTo, printables.com/model/1058946, CC BY 4.0);
   its placement (centred between the card slots, fan at the hinge side) is inferred."""
