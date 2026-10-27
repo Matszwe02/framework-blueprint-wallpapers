@@ -180,7 +180,7 @@ def main():
 
 def still_frames(L, fps):
     """Output frame numbers in the middle of the closed, open and exploded holds (standard timing; same constants as scripts/fwconfig.py)."""
-    T = dict(T_OPEN0=1.5, T_OPEN1=3.2, T_DIMS=4.8, T_EXPLODE=7.6, T_HOLD=11.6, **getattr(L, "TIMING", {}))
+    T = dict(T_OPEN0=1.5, T_OPEN1=3.2, T_DIMS=4.8, T_EXPLODE=7.6, T_HOLD=11.6); T.update(getattr(L, "TIMING", {}))
     return [round(m * fps) + 1 for m in (T["T_OPEN0"] / 2, (T["T_OPEN1"] + T["T_DIMS"]) / 2, (T["T_EXPLODE"] + T["T_HOLD"]) / 2)]
 
 def ensure_scene(slug, ldir, blender):
