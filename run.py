@@ -194,7 +194,12 @@ def run_blender(cmd, env, total):
         if line.startswith("Saved:") and (os.sep + "b" + os.sep) in line:
             done += 1; print(f"\r  rendering  {done} / {total}", end="", flush=True)
     p.wait(); print()
-    if p.returncode: sys.exit("Blender failed:\n" + "\n".join(tail))
+    if p.returncode:
+        crash = next((l.split("Writing:", 1)[1].strip() for l in reversed(tail) if l.startswith("Writing:") and l.rstrip().endswith(".crash.txt")), None)
+        info = ""
+        if crash and os.path.exists(crash):                       # Blender's own crash report (stack trace) - the useful part when it dies in a CI container
+            with open(crash, errors="replace") as fh: info = f"\n--- {crash} ---\n" + "".join(fh.readlines()[:60])
+        sys.exit(f"Blender failed (exit code {p.returncode}):\n" + "\n".join(tail) + info)
 
 def lambda_compose(job):
     rd, cd, chunk, env = job
