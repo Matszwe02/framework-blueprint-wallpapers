@@ -46,13 +46,12 @@ LABEL_TEXT = {"D_COVER": {"id": "GFW00_3H_NB_ID_D_COVER_REFER_2"},
 
 # ---- source CAD (downloaded into cad/ by scripts/fetch_cad.py; git-ignored) and the recipe that turns it into the cad/*.npz meshes (scripts/rebuild_cad.py)
 CAD_FILES = {"system.stp": ("Framework-Laptop-13", "Framework Laptop 13 CAD.stp"),
-             "battery.stp": ("Framework-Laptop-13", "Battery/FWKNAQ9_G01_20210911.stp"),
-             "mb2.dxf": ("Framework-Laptop-13", "Mainboard/2D/fw_main_pcb_generic_2_w_fan_2.dxf")}
+             "battery.stp": ("Framework-Laptop-13", "Battery/FWKNAQ9_G01_20210911.stp")}
 REBUILD = [("export", "system.stp", "system"), ("export", "battery.stp", "bparts"),
-           ("tool", "mb_outline.py"), ("tool", "mb_mesh.py"),
+           ("tool", "mb_mesh.py"),
            ("edges", "system"), ("edges", "bparts"), ("edges", "mbparts"), ("logo",)]
 
 SOURCES_MD = """* `Framework Laptop 13 CAD.stp` (Framework-Laptop-13 repo) - chassis shell, display bezel, keyboard, hinge frame and the four expansion cards (USB-C, SD, USB-A, HDMI)
 * `Battery/FWKNAQ9_G01_20210911.stp` - battery
-* `Mainboard/2D/fw_main_pcb_generic_2_w_fan_2.dxf` - mainboard outline extruded 4.0 mm (3.0 top + 1.0 bottom height limits);
-  its placement (centred between the card slots) is inferred, not taken from a 3D model."""
+* `cad/mainboard.step` - detailed 3D mainboard (Printables 'Framework Mainboard v2', by a community author, not Framework; check its licence before redistributing);
+  its placement (centred between the card slots, fan at the hinge side) is inferred."""

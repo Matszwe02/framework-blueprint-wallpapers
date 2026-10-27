@@ -42,7 +42,7 @@ GROUPS = [
  ("C_INNER",  "GASKETS, FOAM + MYLAR",       "base", -18, r"^(GFW30_UP_RF_GASKET_1|SAKURA_LOG_UP_CU_FOIL|IFGP6_USB_IO_BRK_GASKET|GFW30_UP_NOISE_MYLAR_1|LFP30_LOG_UP_TP_SPONGE|LFP30_UP_SUPPORT_RUBBER)$"),
  ("RF_MESH",  "RF SHIELD MESH",              "base", -34, r"^GFW30_RF_METAL_MESH_1$"),
  ("CARDS",    "CARD BRACKETS + LATCHES",     "base", -50, r"^(LFP30_LOW_IO_CARD_BRK_[LR]_1|LFP30_LOG_LOW_IO_LATCH.*|LFP30_LOG_LOW_CARD_LENS)$"),
- ("MAINBOARD","MAINBOARD",                   "base", -68, r"(?!)"),          # assigned by source (2D drawing extrusion), not by name
+ ("MAINBOARD","MAINBOARD",                   "base", -68, r"(?!)"),          # assigned by source (3D board model), not by name
  ("BATTERY",  "BATTERY",                     "base", -68, r"(?!)"),          # assigned by source (official battery STEP), not by name
  ("D_COVER",  "ALUMINIUM D-COVER",           "base", -88, r"^LFP30_LOG_D_AL$"),
  ("CARDS_R",  "USB-C EXPANSION CARDS",       "base", -88, r"^USBC_CARD_R$"),
@@ -65,14 +65,13 @@ LABEL_TEXT = {"KEYS": {"id": "GFW30_KB_283X111X3-85_1_*"},
 # ---- source CAD (downloaded into cad/ by scripts/fetch_cad.py; git-ignored) and the recipe that turns it into the cad/*.npz meshes (scripts/rebuild_cad.py)
 CAD_FILES = {"pro.stp": ("Framework-Laptop-13", "Framework Laptop 13 Pro CAD.stp"),
              "classic.stp": ("Framework-Laptop-13", "Framework Laptop 13 CAD.stp"),
-             "battery.stp": ("Framework-Laptop-13", "Battery/FWKNAQ9_G01_20210911.stp"),
-             "mb2.dxf": ("Framework-Laptop-13", "Mainboard/2D/fw_main_pcb_generic_2_w_fan_2.dxf")}
+             "battery.stp": ("Framework-Laptop-13", "Battery/FWKNAQ9_G01_20210911.stp")}
 REBUILD = [("export", "pro.stp", "parts"), ("export", "classic.stp", "cparts"), ("export", "battery.stp", "bparts"),
-           ("tool", "mb_outline.py"), ("tool", "mb_mesh.py"),
+           ("tool", "mb_mesh.py"),
            ("edges", "parts"), ("edges", "cparts"), ("edges", "bparts"), ("edges", "mbparts"), ("logo",)]
 
 SOURCES_MD = """* `Framework Laptop 13 Pro CAD.stp` (Framework-Laptop-13 repo) - chassis, display, keyboard, haptic pad, gear logo outline, ...
 * `Framework Laptop 13 CAD.stp` - the four USB-C expansion cards (the Pro CAD has none)
 * `Battery/FWKNAQ9_G01_20210911.stp` - Laptop 13 battery
-* `Mainboard/2D/fw_main_pcb_generic_2_w_fan_2.dxf` - mainboard outline extruded 4.0 mm (3.0 top + 1.0 bottom height limits);
-  its placement (centred between the card brackets) is inferred, not taken from a 3D model."""
+* `cad/mainboard.step` - detailed 3D mainboard (Printables 'Framework Mainboard v2', by a community author, not Framework; check its licence before redistributing);
+  its placement (centred between the card slots, fan at the hinge side) is inferred."""
