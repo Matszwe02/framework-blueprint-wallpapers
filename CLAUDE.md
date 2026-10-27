@@ -81,6 +81,10 @@ render/... --compose.py (Skia overlay)--> cNNNN.png --ffmpeg--> mp4
 
 **16** (`fw16`): the Graphics Module assembly `Framework_16_all_DIS_asm_0408.stp` (unzipped from `cad/system_gpu.zip`), the official 3D mainboard and hinge STEPs; pivot `HINGE_CAD=(1.0,4.1)`. Exporting the system STEP is slow (~2.5 min; keycap parts have ~340k triangles each; edge extraction is vectorised). `DROP` removes duplicate keyboard/numpad variants **and `EXPANSION_CARD_COV1`**, the six dummy slot-cover plates in the CAD (they previously showed up as "double brackets" beside the real cards). Cards: six Laptop 13 card models (USB-C/SD/USB-C right, USB-A/HDMI/USB-A left) at the mainboard's three receptacles per side (pitch 34.9 mm), sliding ±95 mm; the graphics module slides out of the rear. **Battery: Framework publishes no 16 battery CAD or dimensions (only 85 Wh, 4S1P).** `tools/battery_estimate.py` makes four cells (82 x 66 x 7.8 mm) sized to the free pocket in the D-cover (measured by ray-casting the official CAD) — an **estimate**; disclose it to the user, never on screen. The faint outlines at the left/right edges of the 16 keyboard are the blank side-spacer modules in the CAD (the keyboard is complete).
 
+## CI (`.github/workflows/wallpapers.yml`)
+
+On every push to master/main (and manually): a matrix job per laptop x aspect (8 jobs, apt Blender + ffmpeg, CPU) renders 1920 px @ 30 fps video, then `--stills` at 3840 px (4K; its own 3 frames, the video's cache is at a different size), and uploads `out/*`. A final job replaces the assets of the single `wallpapers` release (created on first run; stale assets deleted, same-named ones overwritten). A newer push cancels a running render. This is the explicit exception to golden rule 1: the user asked for 1080p30 on every commit. Not tested on GitHub yet (YAML only parsed locally).
+
 ## Gotchas
 
 - Never `pkill -f <pattern>` from a Bash call whose own command line contains that pattern — it kills your shell. Use `ps aux | grep … | awk '{print $2}' | xargs kill`.
@@ -91,4 +95,4 @@ render/... --compose.py (Skia overlay)--> cNNNN.png --ffmpeg--> mp4
 
 ## Status
 
-Four laptops, all scenes baked; the 13 Pro has been rendered at 1080p30, the others only as 480p30 previews. The repo is initialised but has no commits yet. Possible next steps if asked: 1080p30 finals for fw13/fw12/fw16, tighter framing for 3:2.
+Four laptops, all scenes baked; the 13 Pro has been rendered at 1080p30, the others only as 480p30 previews. Possible next steps if asked: 1080p30 finals for fw13/fw12/fw16, tighter framing for 3:2.

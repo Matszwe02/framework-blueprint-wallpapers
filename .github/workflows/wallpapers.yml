@@ -1,0 +1,81 @@
+name: Render wallpapers
+
+# On every push: render every laptop in both aspect ratios: a 1920 px, 30 fps video and three 4K (3840 px) stills each,
+# then replace the assets of the single "wallpapers" release with the fresh files.
+on:
+  push:
+    branches: [master, main]
+  workflow_dispatch:
+
+# a newer commit makes the running render pointless
+concurrency:
+  group: wallpapers
+  cancel-in-progress: true
+
+jobs:
+  render:
+    name: ${{ matrix.laptop }} ${{ matrix.aspect }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 340                      # a 1080p30 render takes ~35-45 min on a fast CPU; the hosted runners are slower
+    strategy:
+      fail-fast: true
+      matrix:
+        laptop: [fw13pro, fw13, fw12, fw16]
+        aspect: ["16:9", "3:2"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install Blender, ffmpeg and Python dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends blender ffmpeg libgl1 libfontconfig1
+          pip install -r requirements.txt
+
+      - name: Render video (1920 px, 30 fps)
+        run: python run.py --laptop ${{ matrix.laptop }} --width 1920 --aspect ${{ matrix.aspect }} --fps 30 --yes
+
+      - name: Export the three still images (4K, rendered separately from the video frames)
+        run: python run.py --laptop ${{ matrix.laptop }} --stills --width 3840 --aspect ${{ matrix.aspect }} --yes
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.laptop }}-${{ matrix.aspect == '3:2' && '3x2' || '16x9' }}
+          path: out/*
+          if-no-files-found: error
+          retention-days: 1
+
+  release:
+    name: Update release
+    needs: render
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: wallpapers
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: files
+          merge-multiple: true
+
+      - name: Publish to the release
+        run: |
+          ls -l files
+          NOTES="Latest renders, 16:9 and 3:2: video (1920 px wide, 30 fps) and closed / open / exploded stills (3840 px wide, 4K) of every Framework laptop. Replaced on every commit - built from ${GITHUB_SHA::7}."
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --notes "$NOTES"
+          else
+            gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "Framework Blueprint Wallpapers" --notes "$NOTES"
+          fi
+          gh release upload "$TAG" files/* --repo "$GITHUB_REPOSITORY" --clobber
+          # drop assets that this run did not produce (renamed or removed outputs)
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | while read -r name; do
+            [ -e "files/$name" ] || gh release delete-asset "$TAG" "$name" --repo "$GITHUB_REPOSITORY" --yes
+          done
