@@ -25,6 +25,7 @@ def grade(img):
     R = np.array([[1, 0, 0], [0, c * SAT, -s * SAT], [0, s * SAT, c * SAT]])
     return np.clip(img @ (Mi @ R @ M).T.astype(np.float32), 0, 1)
 
+REPO = "GITHUB.COM/MATSZWE02/FRAMEWORK-BLUEPRINT-WALLPAPERS"   # footer, bottom right
 DISCLAIMER = "UNOFFICIAL FAN PROJECT, NOT AFFILIATED WITH OR ENDORSED BY FRAMEWORK COMPUTER INC.  FRAMEWORK AND THE GEAR LOGO ARE ITS TRADEMARKS"   # footer, every video and still (licensing: see NOTICE.md)
 WHITE = (235, 244, 255); DIM = (150, 175, 230); ACC = (140, 215, 255)
 
@@ -156,6 +157,7 @@ def hud(cv, t):
     text(cv, L.WATERMARK, W - 62 * S, H - 52 * S, F_BIG, (150, 175, 235), 0.12, "r", 6)
     text(cv, L.SOURCE_LINE, 64 * S, H - 40 * S, F_S, DIM, 0.75, "l", 0.8)
     text(cv, L.NOTE_LINE.format(used=G["used"], dropped=G["dropped"]) + "   /   " + DISCLAIMER, 64 * S, H - 24 * S, F_S, DIM, 0.7, "l", 0.8)
+    text(cv, REPO, W - 62 * S, H - 24 * S, F_S, DIM, 0.7, "r", 0.8)
     # state scrub bar
     bx0, bx1, by = 640 * S, 640 * S + 300 * S, 62 * S
     line(cv, (bx0, by), (bx1, by), DIM, 0.6, 1.0)
