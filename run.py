@@ -52,6 +52,11 @@ def parse_idle(s):
     if not 0 <= v <= 600: raise ValueError("idle time must be between 0 and 600 seconds")
     return v
 
+def parse_speed(s):
+    v = float(s.lower().replace("x", "").strip())
+    if not 0.25 <= v <= 4: raise ValueError("speed must be between 0.25 and 4; 1 = original")
+    return v
+
 def parse_output(s):
     s = s.strip().lower()
     s = {"1": "video", "video": "video", "2": "images", "images": "images", "image": "images", "stills": "images", "3": "images"}.get(s)
@@ -112,6 +117,8 @@ def main():
     ap.add_argument("--idle-closed", type=parse_idle, metavar="SEC", help="extra seconds to hold the closed laptop (default 0)")
     ap.add_argument("--idle-open", type=parse_idle, metavar="SEC", help="extra seconds to hold the opened laptop (default 0)")
     ap.add_argument("--idle-exploded", type=parse_idle, metavar="SEC", help="extra seconds to hold the exploded view with labels (default 0)")
+    ap.add_argument("--speed", type=parse_speed, help="laptop transition speed, 1 = original, 2 = twice as fast (default 1)")
+    ap.add_argument("--label-speed", type=parse_speed, help="label animation speed, 1 = original, 2 = twice as fast (default 1)")
     ap.add_argument("--hue", type=parse_hue, help="colour: a name (" + ", ".join(HUES) + ") or degrees to rotate the hue from the original blue (default 0)")
     ap.add_argument("--saturation", type=parse_sat, help="colour saturation, 1 = original, 0 = grey, up to 3 (default 1)")
     ap.add_argument("--stills", action="store_true", help="export 3 images (closed, open, exploded) instead of a video; no frame rate or idle time")
@@ -127,31 +134,36 @@ def main():
     slug, ldir = pick_laptop(a.laptop, interactive); L = laptops.load_module(ldir)
     if interactive:
         print()
-        print(bold("  1/6  Pixel width"))
+        print(bold("  1/7  Pixel width"))
         a.width = a.width or ask("width in px (e.g. 1280, 1920, 2560, 3840)", 1920, parse_width)
-        print(bold("\n  2/6  Aspect ratio"))
+        print(bold("\n  2/7  Aspect ratio"))
         print("       1) 16:9   standard widescreen\n       2) 3:2    taller frame")
         a.aspect = a.aspect or ask("choose", 1, parse_aspect)
-        print(bold("\n  3/6  Colour"))
+        print(bold("\n  3/7  Colour"))
         print(dim("       hue: " + ", ".join(HUES) + ", or degrees; saturation 1 = original"))
         a.hue = a.hue if a.hue is not None else ask("hue", "blue", parse_hue)
         a.saturation = a.saturation if a.saturation is not None else ask("saturation", 1, parse_sat)
-        print(bold("\n  4/6  Output"))
+        print(bold("\n  4/7  Output"))
         print("       1) video     18 s seamless loop (mp4)\n       2) 3 images  closed, opened and exploded (png), no video")
         a.stills = a.stills or ask("choose", 1, parse_output) == "images"
         if not a.stills:
-            print(bold("\n  5/6  Frame rate"))
+            print(bold("\n  5/7  Frame rate"))
             a.fps = a.fps or ask("frames per second (Hz)", 30, parse_fps)
-            print(bold("\n  6/6  Idle time"))
+            print(bold("\n  6/7  Animation speed"))
+            print(dim("       1 = original, 2 = twice as fast, 0.5 = half speed (range 0.25-4)"))
+            a.speed = a.speed or ask("laptop transition speed", 1, parse_speed)
+            a.label_speed = a.label_speed or ask("label animation speed", 1, parse_speed)
+            print(bold("\n  7/7  Idle time"))
             print(dim("       the animation stands still in three places; add extra seconds to each (0 = standard timing)"))
             if a.idle_closed is None: a.idle_closed = ask("extra seconds, closed laptop", 0, parse_idle)
             if a.idle_open is None: a.idle_open = ask("extra seconds, opened laptop", 0, parse_idle)
             if a.idle_exploded is None: a.idle_exploded = ask("extra seconds, exploded with labels", 0, parse_idle)
     a.width, a.aspect = a.width or 1920, a.aspect or "16:9"; hue, sat = a.hue or 0.0, 1.0 if a.saturation is None else a.saturation
     graded = hue % 360 != 0 or sat != 1.0; ctag = f"_h{hue:g}_s{sat:g}" if graded else ""     # colour only affects the composite, so Blender frames are shared between colours
-    if a.stills: a.fps, idle = STILL_FPS, (0.0, 0.0, 0.0)             # stills use the standard timeline
+    speed, lspeed = a.speed or 1.0, a.label_speed or 1.0
+    if a.stills: a.fps, idle, speed = STILL_FPS, (0.0, 0.0, 0.0), 1.0            # stills use the standard timeline
     else: a.fps = a.fps or 30; idle = tuple(v or 0.0 for v in (a.idle_closed, a.idle_open, a.idle_exploded))
-    W, H = size_for(a.width, a.aspect); duration = DURATION + sum(idle); nframes = round(duration * a.fps)
+    W, H = size_for(a.width, a.aspect); duration = DURATION / speed + sum(idle); nframes = round(duration * a.fps)
     if a.stills: only = still_frames(L, a.fps)                         # middle of each hold: closed, open, exploded (labels fully shown)
     else: only = [int(x) for x in a.only.split(",")] if a.only else list(range(1, nframes + 1))
 
@@ -164,6 +176,7 @@ def main():
     if a.stills: print(f"  {bold('Output')}   {W} x {H}  ({a.aspect})  -  3 images (closed, opened, exploded)")
     else:
         print(f"  {bold('Output')}   {W} x {H}  ({a.aspect})  @ {a.fps} fps  -  {nframes} frames, {duration:g} s")
+        if speed != 1 or lspeed != 1: print(f"  {bold('Speed')}    laptop x{speed:g}, labels x{lspeed:g}")
         if any(idle): print(f"  {bold('Idle')}     +{idle[0]:g} s closed, +{idle[1]:g} s opened, +{idle[2]:g} s exploded")
     print(f"  {bold('Blender')}  {blender}")
     ensure_scene(slug, ldir, blender)
@@ -171,9 +184,9 @@ def main():
     if interactive and not a.yes and input(f"\n  {cyan('>')} start render? {dim('[Y/n]')} ").strip().lower() in ("n", "no"): sys.exit("aborted")
     print()
 
-    env = dict(os.environ, FW_LAPTOP=slug, FW_RES=f"{W}x{H}", FW_FPS=str(a.fps), FW_IDLE=",".join(f"{v:g}" for v in idle), FW_HUE=f"{hue:g}", FW_SAT=f"{sat:g}")
-    tag = f"{slug}_{W}x{H}_{a.fps}_{sid}" + ("_idle" + "-".join(f"{v:g}" for v in idle) if any(idle) else "")
-    rd, cd = os.path.join(ROOT, "render", tag), os.path.join(ROOT, "render", "comp_" + tag + ctag)       # the tag includes the idle times: they shift what each frame number shows
+    env = dict(os.environ, FW_LAPTOP=slug, FW_RES=f"{W}x{H}", FW_FPS=str(a.fps), FW_IDLE=",".join(f"{v:g}" for v in idle), FW_SPEED=f"{speed:g}", FW_LABEL_SPEED=f"{lspeed:g}", FW_HUE=f"{hue:g}", FW_SAT=f"{sat:g}")
+    tag = f"{slug}_{W}x{H}_{a.fps}_{sid}" + ("_idle" + "-".join(f"{v:g}" for v in idle) if any(idle) else "") + (f"_speed{speed:g}" if speed != 1 else "")
+    rd, cd = os.path.join(ROOT, "render", tag), os.path.join(ROOT, "render", "comp_" + tag + (f"_label{lspeed:g}" if lspeed != 1 else "") + ctag)       # the tag includes the idle times: they shift what each frame number shows
     os.makedirs(rd, exist_ok=True); os.makedirs(cd, exist_ok=True)
     todo = [f for f in only if not os.path.exists(os.path.join(rd, f"f{f:04d}.json"))]
     print(f"  {len(todo)} of {len(only)} frames to render" + (" (rest found from a previous run)" if len(todo) < len(only) else ""))

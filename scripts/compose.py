@@ -124,7 +124,7 @@ def callouts(cv, cam, ortho, mats, t):
         for gid in ids:
             ly = SLOTS[side][gid]
             M = np.array(mats[gid]); anc = np.array(GR[gid]["anchorL" if side == "L" else "anchorR"]); p = project(cam, ortho, (M @ np.r_[anc, 1.0])[:3])[0]
-            prog = ss((t - reveal0 - JIT_IN[gid]) / 0.5) * (1 - ss((t - (C.T_HOLD - 0.9 + JIT_OUT[gid])) / 0.35))
+            prog = ss((t - reveal0 - JIT_IN[gid]) * C.LABEL_SPEED / 0.5) * (1 - ss((t - (C.T_HOLD - 0.9 + JIT_OUT[gid])) * C.LABEL_SPEED / 0.35))
             if prog <= 0.001: continue
             x0 = 64 * S if side == "L" else W - 64 * S; ttl, sub = GR[gid]["label"], info_lines(gid)
             wmax = (tw(ttl, F_H, 1.2) if sub is None else max(tw(ttl, F_H, 1.2), tw(sub[0], F_L), tw(sub[1], F_S))) + 6 * S

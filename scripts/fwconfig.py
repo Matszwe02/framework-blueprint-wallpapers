@@ -15,7 +15,9 @@ BASE_DURATION = 18.0                    # length of the baked animation
 BAKED_NFRAMES = int(BAKED_FPS * BASE_DURATION)
 # optional extra idle time [s] in the three still holds (closed, open, exploded), "FW_IDLE=closed,open,exploded"; the video gets that much longer
 IDLE = tuple(max(0.0, float(v)) for v in (os.environ.get("FW_IDLE") or "0,0,0").split(","))
-DURATION = BASE_DURATION + sum(IDLE)
+SPEED = min(4.0, max(0.25, float(os.environ.get("FW_SPEED") or 1.0)))              # laptop transition speed (1 = original); the base animation takes 18 / SPEED seconds
+LABEL_SPEED = min(4.0, max(0.25, float(os.environ.get("FW_LABEL_SPEED") or 1.0)))  # label fade speed (1 = original)
+DURATION = BASE_DURATION / SPEED + sum(IDLE)
 NFRAMES = int(round(FPS * DURATION))
 LID_ANGLE = getattr(L, "LID_ANGLE", 105.0)     # deg, presentational hero pose
 HINGE_CAD = L.HINGE_CAD                        # hinge pin axis (CAD Y, Z), read from the hinge parts' cylindrical faces
@@ -52,13 +54,14 @@ def hold_mids():                         # base-timeline middle of each still ho
     return (T_OPEN0 / 2, (T_OPEN1 + T_DIMS) / 2, (T_EXPLODE + T_HOLD) / 2)
 
 def warp(t):
-    """Output time -> baked-animation time. The extra idle seconds (IDLE) are inserted by freezing the animation at the middle of each hold."""
+    """Output time -> baked-animation time (SPEED scales the whole animation). The extra idle seconds (IDLE) are inserted by freezing the animation at the middle of each hold."""
     shift = 0.0
     for m, x in zip(hold_mids(), IDLE):
-        if t < m + shift: break
-        if t < m + shift + x: return m
+        ms = m / SPEED                   # hold middle in output time (before the idle seconds already inserted)
+        if t < ms + shift: break
+        if t < ms + shift + x: return m
         shift += x
-    return t - shift
+    return (t - shift) * SPEED
 
 def lid_open(t):                         # 0 = closed, 1 = open hero pose; loop starts and ends closed
     if t < T_OPEN0: return 0.0
