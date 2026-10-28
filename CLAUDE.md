@@ -90,7 +90,7 @@ On every push to master/main (and manually): a matrix job per laptop x aspect (8
 
 ## Licensing
 
-Code is MIT (`LICENSE`). Framework's CAD (Laptop 13/12/16 repos; the 13 Pro files are in the 13 repo) is CC BY 4.0, so the derived `cad/` meshes, scenes, videos and stills need attribution, the licence link and a statement of changes - all in `NOTICE.md` (keep its table in step when `CAD_FILES` changes), the footer `SOURCE_LINE` and the release notes. Framework's name and gear logo are trademarks the CAD licence does not cover, hence the on-screen "unofficial" disclaimer and `NOTICE.md`. Fonts are OFL; the licence texts sit in `fonts/`. Not legal advice - Framework's brand guidelines were not reviewed.
+Code is MIT (`LICENSE`). Framework's CAD (Laptop 13/12/16 repos; the 13 Pro files are in the 13 repo) is CC BY 4.0, so the derived `cad/` meshes, scenes, videos and stills need attribution, the licence link and a statement of changes - all in `NOTICE.md` (keep its table in step when `CAD_FILES` changes) and the footer `SOURCE_LINE` (the release has no notes). Framework's name and gear logo are trademarks the CAD licence does not cover, hence the on-screen "unofficial" disclaimer and `NOTICE.md`. Fonts are OFL; the licence texts sit in `fonts/`. Not legal advice - Framework's brand guidelines were not reviewed.
 
 ## Gotchas
 

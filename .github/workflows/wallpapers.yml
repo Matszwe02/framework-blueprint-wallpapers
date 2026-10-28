@@ -42,7 +42,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Render video (1920 px, 30 fps)
-        run: python run.py --laptop ${{ matrix.laptop }} --width 1920 --aspect ${{ matrix.aspect }} --fps 30 --blender "$BLENDER" --yes
+        run: python run.py --laptop ${{ matrix.laptop }} --width 1920 --aspect ${{ matrix.aspect }} --fps 30 --speed 1.5 --label-speed 1 --idle-closed 2 --idle-open 2 --idle-exploded 2 --blender "$BLENDER" --yes
 
       - name: Export the three still images (4K, rendered separately from the video frames)
         run: python run.py --laptop ${{ matrix.laptop }} --stills --width 3840 --aspect ${{ matrix.aspect }} --blender "$BLENDER" --yes
@@ -72,11 +72,10 @@ jobs:
       - name: Publish to the release
         run: |
           ls -l files
-          NOTES="Latest renders, 16:9 and 3:2: video (1920 px wide, 30 fps) and closed / open / exploded stills (3840 px wide, 4K) of every Framework laptop. Replaced on every commit - built from ${GITHUB_SHA::7}. Unofficial fan project, not affiliated with or endorsed by Framework Computer Inc; Framework and the gear logo are its trademarks. Adapted from Framework Computer Inc's official CAD (https://github.com/FrameworkComputer), licensed CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/), modified: meshed, regrouped and animated; see NOTICE.md in the repository."
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --notes "$NOTES"
+            echo "release exists"
           else
-            gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "Framework Blueprint Wallpapers" --notes "$NOTES"
+            gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "Framework Blueprint Wallpapers" --notes ""
           fi
           gh release upload "$TAG" files/* --repo "$GITHUB_REPOSITORY" --clobber
           # drop assets that this run did not produce (renamed or removed outputs)

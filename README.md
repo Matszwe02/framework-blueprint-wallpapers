@@ -59,7 +59,7 @@ A full 1080p render takes roughly 35-45 minutes per laptop on a CPU (about 4 s p
 
 ## Automatic releases
 
-A GitHub Action ([.github/workflows/wallpapers.yml](.github/workflows/wallpapers.yml)) renders every laptop on each push (16:9 and 3:2: a 1920 px, 30 fps video plus three 4K stills) and uploads the files to the `wallpapers` release, replacing the previous ones. Rendering takes about an hour per laptop and aspect ratio; the eight jobs run in parallel.
+A GitHub Action ([.github/workflows/wallpapers.yml](.github/workflows/wallpapers.yml)) renders every laptop on each push (16:9 and 3:2: a 1920 px, 30 fps video plus three 4K stills) and uploads the files to the `wallpapers` release, replacing the previous ones. Rendering takes about an hour per laptop and aspect ratio; the eight jobs run in parallel. The video is rendered at 1.5x laptop speed, 1x label speed and 2 s of extra idle time on each still hold (closed, open, exploded; the open hold counts twice), i.e. `--speed 1.5 --label-speed 1 --idle-closed 2 --idle-open 2 --idle-exploded 2`.
 
 ## Repository layout
 
