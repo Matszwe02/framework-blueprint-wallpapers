@@ -47,7 +47,7 @@ python run.py --laptop fw13 --stills --width 3840 --yes
 
 The interactive mode asks for all of this too.
 
-A full 1080p render takes roughly 35-45 minutes per laptop on a CPU (about 4 s per frame, 540 frames). Frames are cached in `render/`, so a stopped run resumes where it left off. For a quick preview, use `--width 854`.
+A full 1080p render takes roughly 35-45 minutes per laptop on a CPU (about 4 s per frame, 540 frames). Frames are cached in `render/` while rendering, so a stopped run resumes where it left off; once the video (or stills) is written, the frames are deleted. For a quick preview, use `--width 854`.
 
 ## Automatic releases
 

@@ -8,7 +8,7 @@
 
 Pipeline: Blender/Cycles (two passes per frame) -> 2D overlay composite -> ffmpeg.
 Needs Blender 4.x, ffmpeg on PATH and `pip install -r requirements.txt`.
-Frames are kept in render/<laptop>_<W>x<H>_<fps>_<scene id>/, so an interrupted run resumes where it stopped but frames from an older build are never reused.
+Frames are kept in render/<laptop>_<W>x<H>_<fps>_<scene id>/, so an interrupted run resumes where it stopped but frames from an older build are never reused. Once the video or stills are written, those frame folders are deleted.
 """
 import argparse, glob, hashlib, os, shutil, subprocess, sys
 from concurrent.futures import ProcessPoolExecutor
@@ -205,11 +205,16 @@ def main():
     if a.stills:
         names = ("closed", "open", "exploded")
         for n, f in zip(names, only): shutil.copy(os.path.join(cd, f"c{f:04d}.png"), os.path.join(out, f"{slug}_blueprint_{W}x{H}_{n}{ctag}.png"))
-        print(f"\n  {bold('done')} -> {out}{os.sep}{slug}_blueprint_{W}x{H}_{{{','.join(names)}}}{ctag}.png\n"); return
+        print(f"\n  {bold('done')} -> {out}{os.sep}{slug}_blueprint_{W}x{H}_{{{','.join(names)}}}{ctag}.png\n"); cleanup(rd, cd); return
     if a.only: print("  --only given: skipping video encode, composites are in", cd); return
     print("  encoding ...")
     subprocess.run(["ffmpeg", "-y", "-v", "error", "-framerate", str(a.fps), "-i", os.path.join(cd, "c%04d.png"), "-c:v", "libx264", "-crf", "14", "-preset", "slow", "-pix_fmt", "yuv420p", "-movflags", "+faststart", mp4], check=True)
-    print(f"\n  {bold('done')} -> {mp4}\n")
+    print(f"\n  {bold('done')} -> {mp4}\n"); cleanup(rd, cd)
+
+def cleanup(*dirs):
+    """Delete the frame folders in render/ once the output (video or stills) is written."""
+    for d in dirs: shutil.rmtree(d, ignore_errors=True)
+    print("  removed the frames in render/")
 
 def still_frames(L, fps):
     """Output frame numbers in the middle of the closed, open and exploded holds (standard timing; same constants as scripts/fwconfig.py)."""

@@ -20,7 +20,7 @@ fwXX_blueprint_renderer/     one per laptop (fw13pro, fw13, fw12, fw16):
     tools/                   optional laptop-specific generators (mainboard outline extrusion, keycaps, battery estimate)
 ```
 
-Generated and git-ignored: `render/` (frames), `out/` (videos), `dist/` (zip), `venv/`. Source CAD (`cad/*.stp|*.dxf|*.zip`) is git-ignored and re-downloadable.
+Generated and git-ignored: `render/` (frames; `run.py` deletes them when a render finishes), `out/` (videos), `venv/`. Source CAD (`cad/*.stp|*.dxf|*.zip`) is git-ignored and re-downloadable.
 
 ## Golden rules (user preferences — follow them)
 
@@ -47,11 +47,10 @@ Colour: `--hue NAME|DEG` (blue, purple, magenta, pink, red, orange, yellow, gree
 Dev scripts (all take the laptop slug; honour `PYTHON=` and `BLENDER=` env overrides, otherwise use `venv/bin/python` if present, else `python3`):
 - `scripts/tune.sh <laptop> "110 271" [name]` — stills at 854x480 (`FW_RES=1280x720` for bigger) + a contact sheet at `render/<slug>_tune/<name>.png`. Use it for every visual check.
 - `scripts/preview.sh <laptop> [frames...]` — bakes a scene for 854 px (so line weight matches) and renders the 480p30 preview video to `out/<slug>_blueprint_preview.mp4` (~6-10 min). Run it detached (`nohup`) and wait; don't poll.
-- `scripts/package.py [laptop ...]` — builds `dist/framework_blueprint_renderers.zip` (runtime scripts + `run.py` + each laptop's `scene.blend`, `laptop.py`, `groups.json`, `logo_loops.json`, generated README). Rebuild it after any scene/script change.
 - `scripts/fetch_cad.py <laptop>` downloads the official source CAD (`CAD_FILES` in `laptop.py`); `scripts/rebuild_cad.py <laptop> [--no-scene]` runs the laptop's `REBUILD` recipe (STEP -> npz meshes -> feature edges -> tools -> logo) and bakes `scene.blend`. Needs `requirements-dev.txt` (`python3 -m venv venv && venv/bin/pip install -r requirements-dev.txt`).
 - Manual scene bake: `FW_LAPTOP=fw16 blender -b --python scripts/build_scene.py` (run from the repo root). Inspect CAD with `scripts/tree.py`, `scripts/inspect_parts.py`, `scripts/hinge_axis.py` (finds hinge pivots from cylinder faces).
 
-Environment variables read by the scripts: `FW_LAPTOP` (slug or dir name; required by every script except `run.py`/`fetch_cad.py`/`rebuild_cad.py`/`package.py`, which take it as an argument), `FW_RES` (`WxH`, default 1920x1080), `FW_FPS` (default 30), `FW_IDLE` (`closed,open,exploded` extra hold seconds, default `0,0,0`), `FW_SAMPLES` (Cycles samples, default 24), `FW_SHRINK` (fill inset, default 0.03 mm), `FW_SCENE_OUT` (where `build_scene.py` writes the .blend; default `<laptop dir>/scene.blend`).
+Environment variables read by the scripts: `FW_LAPTOP` (slug or dir name; required by every script except `run.py`/`fetch_cad.py`/`rebuild_cad.py`, which take it as an argument), `FW_RES` (`WxH`, default 1920x1080), `FW_FPS` (default 30), `FW_IDLE` (`closed,open,exploded` extra hold seconds, default `0,0,0`), `FW_SAMPLES` (Cycles samples, default 24), `FW_SHRINK` (fill inset, default 0.03 mm), `FW_SCENE_OUT` (where `build_scene.py` writes the .blend; default `<laptop dir>/scene.blend`).
 
 ## Pipeline and architecture
 
