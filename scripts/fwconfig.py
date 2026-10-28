@@ -17,7 +17,8 @@ BAKED_NFRAMES = int(BAKED_FPS * BASE_DURATION)
 IDLE = tuple(max(0.0, float(v)) for v in (os.environ.get("FW_IDLE") or "0,0,0").split(","))
 SPEED = min(4.0, max(0.25, float(os.environ.get("FW_SPEED") or 1.0)))              # laptop transition speed (1 = original); the base animation takes 18 / SPEED seconds
 LABEL_SPEED = min(4.0, max(0.25, float(os.environ.get("FW_LABEL_SPEED") or 1.0)))  # label fade speed (1 = original)
-DURATION = BASE_DURATION / SPEED + sum(IDLE)
+IDLE_HOLDS = (IDLE[0], IDLE[1], IDLE[2], IDLE[1])      # per hold in timeline order: closed, open, exploded, open again (after collapsing; shares the 'open' idle time)
+DURATION = BASE_DURATION / SPEED + sum(IDLE_HOLDS)
 NFRAMES = int(round(FPS * DURATION))
 LID_ANGLE = getattr(L, "LID_ANGLE", 105.0)     # deg, presentational hero pose
 HINGE_CAD = L.HINGE_CAD                        # hinge pin axis (CAD Y, Z), read from the hinge parts' cylindrical faces
@@ -50,13 +51,13 @@ for _k, _v in getattr(L, "TIMING", {}).items(): globals()[_k] = _v        # opti
 def ss(x):
     x = min(1.0, max(0.0, x)); return x * x * x * (x * (x * 6 - 15) + 10)
 
-def hold_mids():                         # base-timeline middle of each still hold: closed, open, exploded (labels are fully shown at the exploded one)
-    return (T_OPEN0 / 2, (T_OPEN1 + T_DIMS) / 2, (T_EXPLODE + T_HOLD) / 2)
+def hold_mids():                         # base-timeline middle of each still hold: closed, open, exploded (labels are fully shown at the exploded one), open again after collapsing
+    return (T_OPEN0 / 2, (T_OPEN1 + T_DIMS) / 2, (T_EXPLODE + T_HOLD) / 2, (T_COLLAPSE + T_CLOSE0) / 2)
 
 def warp(t):
     """Output time -> baked-animation time (SPEED scales the whole animation). The extra idle seconds (IDLE) are inserted by freezing the animation at the middle of each hold."""
     shift = 0.0
-    for m, x in zip(hold_mids(), IDLE):
+    for m, x in zip(hold_mids(), IDLE_HOLDS):
         ms = m / SPEED                   # hold middle in output time (before the idle seconds already inserted)
         if t < ms + shift: break
         if t < ms + shift + x: return m

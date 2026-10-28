@@ -156,14 +156,14 @@ def main():
             print(bold("\n  7/7  Idle time"))
             print(dim("       the animation stands still in three places; add extra seconds to each (0 = standard timing)"))
             if a.idle_closed is None: a.idle_closed = ask("extra seconds, closed laptop", 0, parse_idle)
-            if a.idle_open is None: a.idle_open = ask("extra seconds, opened laptop", 0, parse_idle)
+            if a.idle_open is None: a.idle_open = ask("extra seconds, opened laptop (before and after exploding)", 0, parse_idle)
             if a.idle_exploded is None: a.idle_exploded = ask("extra seconds, exploded with labels", 0, parse_idle)
     a.width, a.aspect = a.width or 1920, a.aspect or "16:9"; hue, sat = a.hue or 0.0, 1.0 if a.saturation is None else a.saturation
     graded = hue % 360 != 0 or sat != 1.0; ctag = f"_h{hue:g}_s{sat:g}" if graded else ""     # colour only affects the composite, so Blender frames are shared between colours
     speed, lspeed = a.speed or 1.0, a.label_speed or 1.0
     if a.stills: a.fps, idle, speed = STILL_FPS, (0.0, 0.0, 0.0), 1.0            # stills use the standard timeline
     else: a.fps = a.fps or 30; idle = tuple(v or 0.0 for v in (a.idle_closed, a.idle_open, a.idle_exploded))
-    W, H = size_for(a.width, a.aspect); duration = DURATION / speed + sum(idle); nframes = round(duration * a.fps)
+    W, H = size_for(a.width, a.aspect); duration = DURATION / speed + idle[0] + 2 * idle[1] + idle[2]; nframes = round(duration * a.fps)
     if a.stills: only = still_frames(L, a.fps)                         # middle of each hold: closed, open, exploded (labels fully shown)
     else: only = [int(x) for x in a.only.split(",")] if a.only else list(range(1, nframes + 1))
 
@@ -177,7 +177,7 @@ def main():
     else:
         print(f"  {bold('Output')}   {W} x {H}  ({a.aspect})  @ {a.fps} fps  -  {nframes} frames, {duration:g} s")
         if speed != 1 or lspeed != 1: print(f"  {bold('Speed')}    laptop x{speed:g}, labels x{lspeed:g}")
-        if any(idle): print(f"  {bold('Idle')}     +{idle[0]:g} s closed, +{idle[1]:g} s opened, +{idle[2]:g} s exploded")
+        if any(idle): print(f"  {bold('Idle')}     +{idle[0]:g} s closed, +{idle[1]:g} s opened (before and after the explode), +{idle[2]:g} s exploded")
     print(f"  {bold('Blender')}  {blender}")
     ensure_scene(slug, ldir, blender)
     sid = scene_id(ldir); print(f"  {bold('Scene')}    {sid}  (frames are cached per scene build; older builds' frames are ignored)")
