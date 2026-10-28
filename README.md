@@ -33,7 +33,7 @@ Supported aspect ratios are 16:9 and 3:2. The default is 1920x1080 at 30 fps. Vi
 
 ### Idle time and still images
 
-The animation stands still in three places: the closed laptop, the opened laptop and the exploded view with labels. By default each holds for the standard time. Add extra seconds to any of them (the video gets longer; the loop stays seamless):
+The animation stands still in three places: the closed laptop, the opened laptop and the exploded view with labels. By default each holds for the standard time. Add extra seconds to any of them (the video gets longer; the loop stays seamless). The opened laptop is held twice, before and after the explode, and the open idle time applies to both:
 
 ```
 python run.py --laptop fw13 --idle-closed 2 --idle-open 1 --idle-exploded 5
@@ -45,7 +45,15 @@ To get only images, with no video, use `--stills`. It writes three PNGs (closed,
 python run.py --laptop fw13 --stills --width 3840 --yes
 ```
 
-The interactive mode asks for all of this too.
+### Speed and colour
+
+`--speed X` scales the laptop animation and `--label-speed X` the label fades (1 = original, 2 = twice as fast, range 0.25-4). `--hue` takes a name (blue, purple, violet, magenta, pink, red, orange, yellow, green, teal, cyan) or degrees from the original blue, and `--saturation` runs from 0 (grey) to 3 (1 = original):
+
+```
+python run.py --laptop fw12 --speed 1.5 --hue green --saturation 1.2
+```
+
+The interactive mode asks for the options above too.
 
 A full 1080p render takes roughly 35-45 minutes per laptop on a CPU (about 4 s per frame, 540 frames). Frames are cached in `render/` while rendering, so a stopped run resumes where it left off; once the video (or stills) is written, the frames are deleted. For a quick preview, use `--width 854`.
 
@@ -57,7 +65,7 @@ A GitHub Action ([.github/workflows/wallpapers.yml](.github/workflows/wallpapers
 
 ```
 run.py                       renderer (interactive and CLI)
-scripts/                     shared code: scene baking, frame rendering, compositing, packaging
+scripts/                     shared code: scene baking, frame rendering, compositing, CAD tools
 fwXX_blueprint_renderer/     per-laptop config (laptop.py), baked scene.blend, derived CAD, optional tools/
 fonts/                       Rajdhani, Share Tech Mono
 ```
@@ -66,12 +74,12 @@ All laptops share one codebase and differ only through their `fwXX_blueprint_ren
 
 ## Notes
 
-- The 13 Pro CAD is exterior-only. Its cards, battery and mainboard are taken from the Laptop 13 CAD, and the mainboard is extruded from the official 2D outline, so its placement is inferred.
+- The 13 Pro CAD is exterior-only. Its cards, battery and mainboard are taken from the Laptop 13 CAD, and the mainboard is the community 3D model 'Framework Mainboard v2' by ManelTo (CC BY 4.0), so its placement is inferred. The same board is used in the Laptop 13.
 - Framework publishes no 3D battery model for the Laptop 16. Its battery is an estimate sized to the free pocket in the chassis.
 
 ## Licensing
 
 - Code: MIT ([LICENSE](LICENSE)).
-- Framework's CAD, and the models, videos and images made from it: CC BY 4.0, credited to Framework Computer Inc with the changes listed in [NOTICE.md](NOTICE.md). Every video and still carries the source and licence in its footer.
+- Framework's CAD, and the models, videos and images made from it: CC BY 4.0, credited to Framework Computer Inc with the changes listed in [NOTICE.md](NOTICE.md). Every video and still carries the source, the licence and the repository URL in its footer.
 - Fonts: SIL Open Font License, see `fonts/`.
 - "Framework" and the gear logo are trademarks of Framework Computer Inc. This is an unofficial project, and the footer of every video and image says so.
