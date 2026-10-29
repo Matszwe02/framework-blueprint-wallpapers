@@ -4,6 +4,24 @@ Seamlessly looping, 18-second exploded-view "blueprint" videos of Framework lapt
 
 Each video starts with the laptop closed. The lid opens, the machine explodes into labelled layers, re-assembles and closes. The look is a navy blueprint grid with a glassy translucent fill and rim glow, white hidden-line CAD edges, dimension lines, callout labels, a scrub bar and the Framework logo.
 
+## Examples
+
+Exploded views, as published in the [`wallpapers` release](https://github.com/Matszwe02/framework-blueprint-wallpapers/releases/tag/wallpapers) (4K stills):
+
+| | |
+|---|---|
+| <img src="https://github.com/Matszwe02/framework-blueprint-wallpapers/releases/download/wallpapers/fw13pro_blueprint_3840x2160_exploded.png" alt="Framework Laptop 13 Pro, exploded view"><br>Framework Laptop 13 Pro | <img src="https://github.com/Matszwe02/framework-blueprint-wallpapers/releases/download/wallpapers/fw13_blueprint_3840x2160_exploded.png" alt="Framework Laptop 13, exploded view"><br>Framework Laptop 13 |
+| <img src="https://github.com/Matszwe02/framework-blueprint-wallpapers/releases/download/wallpapers/fw12_blueprint_3840x2160_exploded.png" alt="Framework Laptop 12, exploded view"><br>Framework Laptop 12 | <img src="https://github.com/Matszwe02/framework-blueprint-wallpapers/releases/download/wallpapers/fw16_blueprint_3840x2160_exploded.png" alt="Framework Laptop 16, exploded view"><br>Framework Laptop 16 |
+
+Every laptop is also available as a looping 1920 px video (16:9 and 3:2) and as closed, open and exploded stills:
+
+| Laptop | Video (16:9) | Video (3:2) |
+|--------|--------------|-------------|
+| 13 Pro | [mp4](https://github.com/Matszwe02/framework-blueprint-wallpapers/releases/download/wallpapers/fw13pro_blueprint_1920x1080_30.mp4) | [mp4](https://github.com/Matszwe02/framework-blueprint-wallpapers/releases/download/wallpapers/fw13pro_blueprint_1920x1280_30.mp4) |
+| 13 | [mp4](https://github.com/Matszwe02/framework-blueprint-wallpapers/releases/download/wallpapers/fw13_blueprint_1920x1080_30.mp4) | [mp4](https://github.com/Matszwe02/framework-blueprint-wallpapers/releases/download/wallpapers/fw13_blueprint_1920x1280_30.mp4) |
+| 12 | [mp4](https://github.com/Matszwe02/framework-blueprint-wallpapers/releases/download/wallpapers/fw12_blueprint_1920x1080_30.mp4) | [mp4](https://github.com/Matszwe02/framework-blueprint-wallpapers/releases/download/wallpapers/fw12_blueprint_1920x1280_30.mp4) |
+| 16 | [mp4](https://github.com/Matszwe02/framework-blueprint-wallpapers/releases/download/wallpapers/fw16_blueprint_1920x1080_30.mp4) | [mp4](https://github.com/Matszwe02/framework-blueprint-wallpapers/releases/download/wallpapers/fw16_blueprint_1920x1280_30.mp4) |
+
 ## Laptops
 
 | Slug | Laptop |
